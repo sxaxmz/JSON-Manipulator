@@ -1,0 +1,422 @@
+[
+	{
+		"id_website": "61",
+		"website_name": "amazon",
+		"visit_date": "2017-03-07",
+		"total_visits": "3491"
+	},
+	{
+		"id_website": "66",
+		"website_name": "twitter",
+		"visit_date": "2017-03-07",
+		"total_visits": "3491"
+	},
+	{
+		"id_website": "63",
+		"website_name": "lazada",
+		"visit_date": "2017-03-07",
+		"total_visits": "3346"
+	},
+	{
+		"id_website": "70",
+		"website_name": "sports",
+		"visit_date": "2017-03-07",
+		"total_visits": "3296"
+	},
+	{
+		"id_website": "69",
+		"website_name": "youtube",
+		"visit_date": "2017-03-07",
+		"total_visits": "3187"
+	},
+	{
+		"id_website": "67",
+		"website_name": "foodpanda",
+		"visit_date": "2017-03-07",
+		"total_visits": "3187"
+	},
+	{
+		"id_website": "62",
+		"website_name": "yahoo",
+		"visit_date": "2017-03-07",
+		"total_visits": "2964"
+	},
+	{
+		"id_website": "65",
+		"website_name": "Ask",
+		"visit_date": "2017-03-07",
+		"total_visits": "2495"
+	},
+	{
+		"id_website": "68",
+		"website_name": "google",
+		"visit_date": "2017-03-07",
+		"total_visits": "2188"
+	},
+	{
+		"id_website": "64",
+		"website_name": "facebook",
+		"visit_date": "2017-03-07",
+		"total_visits": "1598"
+	},
+	{
+		"id_website": "52",
+		"website_name": "yahoo",
+		"visit_date": "2017-03-06",
+		"total_visits": "5899"
+	},
+	{
+		"id_website": "60",
+		"website_name": "sports",
+		"visit_date": "2017-03-06",
+		"total_visits": "5899"
+	},
+	{
+		"id_website": "59",
+		"website_name": "youtube",
+		"visit_date": "2017-03-06",
+		"total_visits": "3491"
+	},
+	{
+		"id_website": "55",
+		"website_name": "Ask",
+		"visit_date": "2017-03-06",
+		"total_visits": "2964"
+	},
+	{
+		"id_website": "51",
+		"website_name": "amazon",
+		"visit_date": "2017-03-06",
+		"total_visits": "2964"
+	},
+	{
+		"id_website": "54",
+		"website_name": "facebook",
+		"visit_date": "2017-03-06",
+		"total_visits": "2495"
+	},
+	{
+		"id_website": "53",
+		"website_name": "lazada",
+		"visit_date": "2017-03-06",
+		"total_visits": "2495"
+	},
+	{
+		"id_website": "57",
+		"website_name": "foodpanda",
+		"visit_date": "2017-03-06",
+		"total_visits": "2188"
+	},
+	{
+		"id_website": "56",
+		"website_name": "twitter",
+		"visit_date": "2017-03-06",
+		"total_visits": "1598"
+	},
+	{
+		"id_website": "58",
+		"website_name": "google",
+		"visit_date": "2017-03-06",
+		"total_visits": "1598"
+	},
+	{
+		"id_website": "46",
+		"website_name": "twitter",
+		"visit_date": "2017-03-05",
+		"total_visits": "3296"
+	},
+	{
+		"id_website": "43",
+		"website_name": "lazada",
+		"visit_date": "2017-03-05",
+		"total_visits": "3187"
+	},
+	{
+		"id_website": "45",
+		"website_name": "Ask",
+		"visit_date": "2017-03-05",
+		"total_visits": "3187"
+	},
+	{
+		"id_website": "42",
+		"website_name": "yahoo",
+		"visit_date": "2017-03-05",
+		"total_visits": "2964"
+	},
+	{
+		"id_website": "48",
+		"website_name": "google",
+		"visit_date": "2017-03-05",
+		"total_visits": "2495"
+	},
+	{
+		"id_website": "44",
+		"website_name": "facebook",
+		"visit_date": "2017-03-05",
+		"total_visits": "2188"
+	},
+	{
+		"id_website": "50",
+		"website_name": "sports",
+		"visit_date": "2017-03-05",
+		"total_visits": "2188"
+	},
+	{
+		"id_website": "47",
+		"website_name": "foodpanda",
+		"visit_date": "2017-03-05",
+		"total_visits": "1598"
+	},
+	{
+		"id_website": "41",
+		"website_name": "amazon",
+		"visit_date": "2017-03-05",
+		"total_visits": "1598"
+	},
+	{
+		"id_website": "49",
+		"website_name": "youtube",
+		"visit_date": "2017-03-05",
+		"total_visits": "1000"
+	},
+	{
+		"id_website": "39",
+		"website_name": "youtube",
+		"visit_date": "2017-03-04",
+		"total_visits": "5899"
+	},
+	{
+		"id_website": "37",
+		"website_name": "foodpanda",
+		"visit_date": "2017-03-04",
+		"total_visits": "3491"
+	},
+	{
+		"id_website": "33",
+		"website_name": "lazada",
+		"visit_date": "2017-03-04",
+		"total_visits": "3187"
+	},
+	{
+		"id_website": "31",
+		"website_name": "amazon",
+		"visit_date": "2017-03-04",
+		"total_visits": "2964"
+	},
+	{
+		"id_website": "35",
+		"website_name": "Ask",
+		"visit_date": "2017-03-04",
+		"total_visits": "2964"
+	},
+	{
+		"id_website": "38",
+		"website_name": "google",
+		"visit_date": "2017-03-04",
+		"total_visits": "2964"
+	},
+	{
+		"id_website": "40",
+		"website_name": "sports",
+		"visit_date": "2017-03-04",
+		"total_visits": "2495"
+	},
+	{
+		"id_website": "36",
+		"website_name": "twitter",
+		"visit_date": "2017-03-04",
+		"total_visits": "2495"
+	},
+	{
+		"id_website": "32",
+		"website_name": "yahoo",
+		"visit_date": "2017-03-04",
+		"total_visits": "2495"
+	},
+	{
+		"id_website": "34",
+		"website_name": "facebook",
+		"visit_date": "2017-03-04",
+		"total_visits": "1598"
+	},
+	{
+		"id_website": "26",
+		"website_name": "twitter",
+		"visit_date": "2017-03-03",
+		"total_visits": "5899"
+	},
+	{
+		"id_website": "25",
+		"website_name": "Ask",
+		"visit_date": "2017-03-03",
+		"total_visits": "3491"
+	},
+	{
+		"id_website": "27",
+		"website_name": "foodpanda",
+		"visit_date": "2017-03-03",
+		"total_visits": "3346"
+	},
+	{
+		"id_website": "23",
+		"website_name": "lazada",
+		"visit_date": "2017-03-03",
+		"total_visits": "3296"
+	},
+	{
+		"id_website": "24",
+		"website_name": "facebook",
+		"visit_date": "2017-03-03",
+		"total_visits": "3187"
+	},
+	{
+		"id_website": "29",
+		"website_name": "youtube",
+		"visit_date": "2017-03-03",
+		"total_visits": "2188"
+	},
+	{
+		"id_website": "22",
+		"website_name": "yahoo",
+		"visit_date": "2017-03-03",
+		"total_visits": "2188"
+	},
+	{
+		"id_website": "28",
+		"website_name": "google",
+		"visit_date": "2017-03-03",
+		"total_visits": "1598"
+	},
+	{
+		"id_website": "30",
+		"website_name": "sports",
+		"visit_date": "2017-03-03",
+		"total_visits": "1598"
+	},
+	{
+		"id_website": "21",
+		"website_name": "amazon",
+		"visit_date": "2017-03-03",
+		"total_visits": "1598"
+	},
+	{
+		"id_website": "11",
+		"website_name": "amazon",
+		"visit_date": "2017-03-02",
+		"total_visits": "3491"
+	},
+	{
+		"id_website": "14",
+		"website_name": "facebook",
+		"visit_date": "2017-03-02",
+		"total_visits": "3491"
+	},
+	{
+		"id_website": "18",
+		"website_name": "google",
+		"visit_date": "2017-03-02",
+		"total_visits": "3296"
+	},
+	{
+		"id_website": "12",
+		"website_name": "yahoo",
+		"visit_date": "2017-03-02",
+		"total_visits": "2964"
+	},
+	{
+		"id_website": "20",
+		"website_name": "sports",
+		"visit_date": "2017-03-02",
+		"total_visits": "2964"
+	},
+	{
+		"id_website": "17",
+		"website_name": "foodpanda",
+		"visit_date": "2017-03-02",
+		"total_visits": "2495"
+	},
+	{
+		"id_website": "13",
+		"website_name": "lazada",
+		"visit_date": "2017-03-02",
+		"total_visits": "2188"
+	},
+	{
+		"id_website": "15",
+		"website_name": "Ask",
+		"visit_date": "2017-03-02",
+		"total_visits": "1598"
+	},
+	{
+		"id_website": "19",
+		"website_name": "youtube",
+		"visit_date": "2017-03-02",
+		"total_visits": "1598"
+	},
+	{
+		"id_website": "16",
+		"website_name": "twitter",
+		"visit_date": "2017-03-02",
+		"total_visits": "1000"
+	},
+	{
+		"id_website": "8",
+		"website_name": "google",
+		"visit_date": "2017-03-01",
+		"total_visits": "5899"
+	},
+	{
+		"id_website": "10",
+		"website_name": "sports",
+		"visit_date": "2017-03-01",
+		"total_visits": "3491"
+	},
+	{
+		"id_website": "3",
+		"website_name": "lazada",
+		"visit_date": "2017-03-01",
+		"total_visits": "3346"
+	},
+	{
+		"id_website": "2",
+		"website_name": "yahoo",
+		"visit_date": "2017-03-01",
+		"total_visits": "3296"
+	},
+	{
+		"id_website": "7",
+		"website_name": "foodpanda",
+		"visit_date": "2017-03-01",
+		"total_visits": "3187"
+	},
+	{
+		"id_website": "5",
+		"website_name": "Ask",
+		"visit_date": "2017-03-01",
+		"total_visits": "2964"
+	},
+	{
+		"id_website": "9",
+		"website_name": "youtube",
+		"visit_date": "2017-03-01",
+		"total_visits": "2495"
+	},
+	{
+		"id_website": "6",
+		"website_name": "twitter",
+		"visit_date": "2017-03-01",
+		"total_visits": "2188"
+	},
+	{
+		"id_website": "4",
+		"website_name": "facebook",
+		"visit_date": "2017-03-01",
+		"total_visits": "1598"
+	},
+	{
+		"id_website": "1",
+		"website_name": "amazon",
+		"visit_date": "2017-03-01",
+		"total_visits": "1000"
+	}
+]

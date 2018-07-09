@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="69dp"
+        android:layout_margin="25px">
+
+        <TextView
+            android:id="@+id/txtSiteName"
+            android:layout_width="118dp"
+            android:layout_height="37dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignTop="@+id/txtVisitDate"
+            android:fontFamily="monospace"
+            android:text="SiteName"
+            android:textAlignment="center"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/txtVisitDate"
+            android:layout_width="109dp"
+            android:layout_height="36dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="10dp"
+            android:fontFamily="monospace"
+            android:text="VisitDate"
+            android:textAlignment="center"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/txtVisitors"
+            android:layout_width="126dp"
+            android:layout_height="34dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignTop="@+id/txtSiteName"
+            android:fontFamily="monospace"
+            android:text="Visitors"
+            android:textAlignment="center"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@android:color/darker_gray" />
+
+    </RelativeLayout>
+
+
+</android.support.v7.widget.CardView>
