@@ -1,6 +1,7 @@
 package stackstagingcom.firstwebpage3_com.websiteranking;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import java.io.InputStream;
@@ -51,10 +52,14 @@ public class MainActivity extends AppCompatActivity {
 
     Button btnFilter;
     Button btnAll;
+    Button btnChart;
 
     TextView txtVisitors;
     TextView txtSiteName;
     TextView txtItemCount;
+
+    String[] siteName;
+    float[] visitors;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
 
         btnFilter = findViewById(R.id.btnFilter);
         btnAll = findViewById(R.id.btnAll);
+        btnChart = findViewById(R.id.btnChart);
 
         txtVisitors = findViewById(R.id.textVisits);
         txtSiteName = findViewById(R.id.textSiteName);
@@ -153,6 +159,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 sortWebsitename();
+            }
+        });
+
+        btnChart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                viewChart();
             }
         });
     }
@@ -273,6 +286,13 @@ public class MainActivity extends AppCompatActivity {
         });
         myRVA.notifyDataSetChanged();
         Toast.makeText(MainActivity.this, "All data displayed", Toast.LENGTH_SHORT).show();
+    }
+
+    public void viewChart () {
+        Log.d("MainActivity", "*** ViewChart ***");
+        Intent intent = new Intent(MainActivity.this, chartActivity.class);
+        startActivity(intent);
+        //chartActivity(siteName, visitors);
     }
 
 }
