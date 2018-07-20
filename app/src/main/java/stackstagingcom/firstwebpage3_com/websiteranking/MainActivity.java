@@ -16,6 +16,9 @@ import android.widget.DatePicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,6 +32,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import okhttp3.OkHttpClient;
@@ -41,8 +46,6 @@ public class MainActivity extends AppCompatActivity {
 
     ArrayList<items> items;
 
-    int itemCount = 0;
-
     private OkHttpClient client;
 
     private TextView dtStart;
@@ -51,8 +54,8 @@ public class MainActivity extends AppCompatActivity {
     private DatePickerDialog.OnDateSetListener dateSetListener;
     private DatePickerDialog.OnDateSetListener dateSetListener2;
 
-    String startDate;
-    String endDate;
+    String startDate = "";
+    String endDate = "";
 
     Button btnFilter;
     Button btnAll;
@@ -64,6 +67,8 @@ public class MainActivity extends AppCompatActivity {
 
     String[] siteName;
     float[] visitors;
+
+    ArrayList<String> allDates = new ArrayList();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
         dateSetListener = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                startDate = year + "/" + (month+1) + "/" + day;
+                startDate = year + "-" + (month+1) + "-" + day;
                 dtStart.setText(startDate);
             }
         };
@@ -131,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
         dateSetListener2 = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                endDate = year + "/" + (month+1) + "/" + day;
+                endDate = year + "-" + (month+1) + "-" + day;
                 dtEnd.setText(endDate);
             }
         };
@@ -144,14 +149,18 @@ public class MainActivity extends AppCompatActivity {
         btnAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                viewNotSortedData();
+                getJSON();
             }
         });
 
         btnFilter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (startDate == "" || endDate == "") {
+                    Toast.makeText(MainActivity.this, "Please select a date!", Toast.LENGTH_SHORT).show();
+                } else {
                     filterJSON(startDate, endDate);
+                }
             }
         });
 
@@ -172,14 +181,23 @@ public class MainActivity extends AppCompatActivity {
         btnChart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                viewChart();
+                //need modification
+                if ( (siteName != null) && (visitors != null) ) {
+                    Toast.makeText(MainActivity.this, "Chart is not working at the moment!", Toast.LENGTH_SHORT).show();
+                } else {
+                    viewChart();
+                }
             }
         });
 
-        JSONtoArray();
+        //JSONtoArray();
+
     }
 
     public void getJSON () {
+
+        Log.d("MainActivity", "** getJSON function **");
+        items.clear();
         String json;
         try {
             InputStream is = getAssets().open("websiteRanking.json");
@@ -193,7 +211,6 @@ public class MainActivity extends AppCompatActivity {
 
             for (int i=0; i<jsonArray.length();i++){
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
-                ++itemCount;
 
                 String siteId = jsonObject.getString("id_website");
                 String siteName = jsonObject.getString("website_name");
@@ -213,8 +230,7 @@ public class MainActivity extends AppCompatActivity {
             myRV.setLayoutManager(myRVLM);
             myRV.setAdapter(myRVA);
 
-            txtItemCount.setText(Integer.toString(itemCount));
-
+            txtItemCount.setText(String.valueOf(items.size()));
         } catch (IOException e){
             e.printStackTrace();
         } catch (JSONException e) {
@@ -277,8 +293,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
-            new chartActivity(siteName, visitors);
-
         } catch (IOException e){
             e.printStackTrace();
         } catch (JSONException e) {
@@ -289,46 +303,112 @@ public class MainActivity extends AppCompatActivity {
 
     public void filterJSON (String startDate, String endDate) {
 
-        String json;
-        try {
-            InputStream is = getAssets().open("websiteRanking.json");
-            int size = is.available();
-            byte [] buffer= new byte[size];
-            is.read(buffer);
-            is.close();
+        Log.d("MainActivity", "** filterJSON function **");
+            String json;
 
-            json = new String(buffer,"UTF-8");
-            JSONArray  jsonArray = new JSONArray(json);
+            getDaysBetween(startDate, endDate);
 
-            Log.d("MainActivity", startDate+" "+ endDate);
+            String eachDate;
+            String checkData = "";
 
-            itemCount = 0;
-            for (int i=0; i<jsonArray.length();i++){
-                JSONObject jsonObject = jsonArray.getJSONObject(i);
-                ++itemCount;
+            try {
+                InputStream is = getAssets().open("websiteRanking.json");
+                int size = is.available();
+                byte[] buffer = new byte[size];
+                is.read(buffer);
+                is.close();
 
-                if (jsonObject.getString("visit_date").equals(startDate) || jsonObject.getString("visit_date").equals(endDate) ) {
-                    String siteId = jsonObject.getString("id_website");
-                    String siteName = jsonObject.getString("website_name");
-                    String visitDate = jsonObject.getString("visit_date");
-                    String visitors = jsonObject.getString("total_visits");
+                json = new String(buffer, "UTF-8");
+                JSONArray jsonArray = new JSONArray(json);
 
-                    items newItem = new items(siteName, siteId, visitDate, visitors);
-                    items.add(newItem);
-                    Log.d("MainActivity ->", siteName+" "+ siteId+" "+ visitDate+" "+ visitors);
+                items.clear();
+                    for (int j = 0; j < allDates.size(); j++) {
+                        eachDate = String.valueOf(allDates.get(j));
+
+                        //Log.d("MainActivity", "allDates.get(j) result --> "+allDates.get(j));
+                        //Log.d("MainActivity", "items from JSON --> " + items.get(j)+ " item --> "+ j);
+
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            JSONObject jsonObject = jsonArray.getJSONObject(i);
+
+                        if (jsonObject.getString("visit_date").equals(eachDate)) {
+                            String siteId = jsonObject.getString("id_website");
+                            String siteName = jsonObject.getString("website_name");
+                            String visitDate = jsonObject.getString("visit_date");
+                            String visitors = jsonObject.getString("total_visits");
+
+
+                            items newItem = new items(siteName, siteId, visitDate, visitors);
+                            items.add(newItem);
+                            Log.d("MainActivity ->", "within the date " + eachDate + " --> " + siteName + " " + siteId + " " + visitDate + " " + visitors);
+
+                            checkData = "UPDATED!";
+                        }
+
+                        if (items.size() == 0){
+                            checkData = "NO DATA!";
+                        }
+                    }
                 }
+
+                myRVA.notifyDataSetChanged();
+
+                Toast.makeText(MainActivity.this, checkData, Toast.LENGTH_SHORT).show();
+
+                txtItemCount.setText(String.valueOf(items.size()));
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
+    }
 
-           myRVA.notifyDataSetChanged();
-            Toast.makeText(MainActivity.this, "Data for "+startDate+" and "+endDate, Toast.LENGTH_SHORT).show();
+    public void getDaysBetween ( String startDate, String endDate){
 
-            txtItemCount.setText(Integer.toString(itemCount));
+        Log.d("MainActivity", "** getDaysBetween function **");
 
-        } catch (IOException e){
-            e.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+            try {
+
+                allDates.clear();
+
+                SimpleDateFormat myFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+                Date dateStart = myFormat.parse(startDate);
+                Date dateEnd = myFormat.parse(endDate);
+
+
+                Calendar c1 = DateToCalendar(dateStart);
+                Calendar c2 = DateToCalendar(dateEnd);
+
+                while (!areEqualDate(c1, c2)) {
+                    allDates.add(myFormat.format(c1.getTime()));
+                    //System.out.println (c1.getTime());
+                    c1.add(Calendar.DAY_OF_YEAR, 1);
+
+                    Log.d("MainActivity", "dateBetween --> " + String.valueOf(c1.getTime()));
+                }
+                allDates.add(myFormat.format(c2.getTime()));
+
+                Log.d("MainActivity", "The 2 dates --> " + startDate + " <--> " + endDate);
+                Log.d("MainActivity", "The 2 dates with format --> " + dateStart + " <--> " + dateEnd);
+                Log.d("MainActivity", "allDates list --> " + String.valueOf(allDates));
+
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+    }
+
+    private static boolean areEqualDate(Calendar c1, Calendar c2) {
+        if (c1.get(Calendar.YEAR) != c2.get(Calendar.YEAR)) return false;
+        if (c1.get(Calendar.MONTH) != c2.get(Calendar.MONTH)) return false;
+        if (c1.get(Calendar.DAY_OF_YEAR) != c2.get(Calendar.DAY_OF_YEAR)) return false;
+        return true;
+    }
+
+    public static Calendar DateToCalendar(Date date) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        return cal;
     }
 
     public void sortTotalVisits () {
@@ -354,19 +434,9 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(MainActivity.this, "The list has been sorted Alphabetically", Toast.LENGTH_SHORT).show();
     }
 
-    public void viewNotSortedData (){
-        Collections.sort(items, new Comparator<stackstagingcom.firstwebpage3_com.websiteranking.items>() {
-            @Override
-            public int compare(items items, items t1) {
-                return items.getSiteId().compareTo(t1.getSiteId());
-            }
-        });
-        myRVA.notifyDataSetChanged();
-        Toast.makeText(MainActivity.this, "All data displayed", Toast.LENGTH_SHORT).show();
-    }
-
     public void viewChart () {
         Log.d("MainActivity", "*** ViewChart ***");
+        new chartActivity(siteName, visitors);
         Intent intent = new Intent(MainActivity.this, chartActivity.class);
         startActivity(intent);
         //chartActivity(siteName, visitors);
