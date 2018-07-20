@@ -23,10 +23,14 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+
 import okhttp3.OkHttpClient;
 
 public class MainActivity extends AppCompatActivity {
@@ -82,6 +86,9 @@ public class MainActivity extends AppCompatActivity {
         txtVisitors = findViewById(R.id.textVisits);
         txtSiteName = findViewById(R.id.textSiteName);
         txtItemCount = findViewById(R.id.txtItemCount);
+
+        siteName = new String[items.size()];
+        visitors = new float[items.size()];
 
         dtStart.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -168,6 +175,8 @@ public class MainActivity extends AppCompatActivity {
                 viewChart();
             }
         });
+
+        JSONtoArray();
     }
 
     public void getJSON () {
@@ -213,6 +222,71 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    //Test function
+    public void JSONtoArray () {
+
+        String json;
+
+        try {
+            InputStream is = getAssets().open("websiteRanking.json");
+            int size = is.available();
+            byte [] buffer= new byte[size];
+            is.read(buffer);
+            is.close();
+
+            json = new String(buffer,"UTF-8");
+            JSONArray  jsonArray = new JSONArray(json);
+
+
+            for (int i=0; i<jsonArray.length();i++){
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+
+                //Get the site names from JSON list
+                //Add it to siteNames array
+                String websiteName = jsonObject.getString("website_name");
+                String totalVisitors = jsonObject.getString("total_visits");
+
+                Log.d("MainActivity", " websiteName --> "+websiteName);
+                Log.d("MainActivity", " totalVisits --> "+totalVisitors);
+
+                //Fix the error
+                //java.lang.ArrayIndexOutOfBoundsException: length=0; index=0
+                siteName [i] = websiteName;
+                visitors [i] = Integer.parseInt(totalVisitors);
+
+                for (int j = 0; j<siteName.length;j++){
+                    //Get the website names from siteName array
+                    //Keep the unique names to be used as indicators in the array
+                    Set<String> uniqueString = new HashSet<String>(Arrays.asList(siteName));
+                    Log.d("MainActivity", siteName+" <-- comparedTo --> "+uniqueString);
+
+                    //Get the number of visits of the duplicated values and store it
+                    //In one unique value column/
+                }
+
+
+                if (jsonObject.getString("visit_date").equals(startDate) || jsonObject.getString("visit_date").equals(endDate) ) {
+                    String siteId = jsonObject.getString("id_website");
+                    String siteName = jsonObject.getString("website_name");
+                    String visitDate = jsonObject.getString("visit_date");
+                    String visitors = jsonObject.getString("total_visits");
+
+                    items newItem = new items(siteName, siteId, visitDate, visitors);
+                    items.add(newItem);
+                    Log.d("MainActivity ->", siteName+" "+ siteId+" "+ visitDate+" "+ visitors);
+                }
+            }
+
+            new chartActivity(siteName, visitors);
+
+        } catch (IOException e){
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
     public void filterJSON (String startDate, String endDate) {
 
         String json;
@@ -228,9 +302,10 @@ public class MainActivity extends AppCompatActivity {
 
             Log.d("MainActivity", startDate+" "+ endDate);
 
+            itemCount = 0;
             for (int i=0; i<jsonArray.length();i++){
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
-
+                ++itemCount;
 
                 if (jsonObject.getString("visit_date").equals(startDate) || jsonObject.getString("visit_date").equals(endDate) ) {
                     String siteId = jsonObject.getString("id_website");
@@ -246,6 +321,8 @@ public class MainActivity extends AppCompatActivity {
 
            myRVA.notifyDataSetChanged();
             Toast.makeText(MainActivity.this, "Data for "+startDate+" and "+endDate, Toast.LENGTH_SHORT).show();
+
+            txtItemCount.setText(Integer.toString(itemCount));
 
         } catch (IOException e){
             e.printStackTrace();

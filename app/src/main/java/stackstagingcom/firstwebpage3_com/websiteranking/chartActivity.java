@@ -17,6 +17,11 @@ import java.util.ArrayList;
 
 public class chartActivity extends AppCompatActivity {
 
+    public chartActivity(String[] siteName, float[] visitors) {
+        this.siteName = siteName;
+        this.visitors = visitors;
+    }
+
     public static String TAG = "chartActivity";
     String [] siteName;
     float[] visitors;
