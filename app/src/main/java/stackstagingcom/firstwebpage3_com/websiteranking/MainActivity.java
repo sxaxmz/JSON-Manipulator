@@ -1,10 +1,13 @@
 package stackstagingcom.firstwebpage3_com.websiteranking;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import java.io.InputStream;
+
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,12 +16,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -32,7 +32,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
@@ -53,27 +52,32 @@ public class MainActivity extends AppCompatActivity {
 
     private DatePickerDialog.OnDateSetListener dateSetListener;
     private DatePickerDialog.OnDateSetListener dateSetListener2;
+    private DatePickerDialog.OnDateSetListener dateSetListener3;
 
     String startDate = "";
     String endDate = "";
 
-    Button btnFilter;
-    Button btnAll;
-    Button btnChart;
+    Button btnFilter, btnAll, btnChart, btnAdd;
 
-    TextView txtVisitors;
-    TextView txtSiteName;
-    TextView txtItemCount;
+    TextView txtVisitors, txtSiteName, txtItemCount, etVisitDate;
 
     String[] siteName;
     float[] visitors;
 
     ArrayList<String> allDates = new ArrayList();
 
+    FloatingActionButton fab;
+
+    EditText etSiteName, etVisitors;
+
+    AlertDialog.Builder adb;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        fab = findViewById(R.id.fab);
 
         client = new OkHttpClient();
 
@@ -94,6 +98,13 @@ public class MainActivity extends AppCompatActivity {
 
         siteName = new String[items.size()];
         visitors = new float[items.size()];
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addData();
+            }
+        });
 
         dtStart.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -192,6 +203,57 @@ public class MainActivity extends AppCompatActivity {
 
         //JSONtoArray();
 
+    }
+
+    public void addData () {
+
+        Log.d("MainActivity", "** addData function **");
+
+        adb = new AlertDialog.Builder(MainActivity.this);
+        View adbView = getLayoutInflater().inflate(R.layout.write_dialog, null);
+
+        etSiteName = adbView.findViewById(R.id.etSiteName);
+        etVisitDate = adbView.findViewById(R.id.etVisitDate);
+        etVisitors = adbView.findViewById(R.id.etVisitors);
+        btnAdd = adbView.findViewById(R.id.btnAdd);
+
+        etVisitDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Calendar cal = Calendar.getInstance();
+                int year = cal.get(Calendar.YEAR);
+                int month = cal.get(Calendar.MONTH);
+                int day = cal.get(Calendar.DAY_OF_MONTH);
+
+                DatePickerDialog dialog = new DatePickerDialog(MainActivity.this, android.R.style.Theme_DeviceDefault_Dialog,
+                        dateSetListener3,year,month,day);
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                dialog.show();
+            }
+        });
+
+        dateSetListener3 = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+                startDate = year + "-" + (month+1) + "-" + day;
+                etVisitDate.setText(startDate);
+            }
+        };
+
+        btnAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!etSiteName.getText().toString().isEmpty() && !etVisitDate.getText().toString().isEmpty() && !etVisitors.getText().toString().isEmpty()) {
+                    Toast.makeText(MainActivity.this, "The Butotn Works!", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(MainActivity.this, "Please fill all the fields!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        adb.setView(adbView);
+        AlertDialog ad = adb.create();
+        ad.show();
     }
 
     public void getJSON () {
