@@ -17,11 +17,6 @@ import java.util.ArrayList;
 
 public class chartActivity extends AppCompatActivity {
 
-    public chartActivity(String[] siteName, float[] visitors) {
-        this.siteName = siteName;
-        this.visitors = visitors;
-    }
-
     public static String TAG = "chartActivity";
     String [] siteName;
     float[] visitors;
@@ -50,6 +45,10 @@ public class chartActivity extends AppCompatActivity {
         addDataSet();
     }
 
+    public chartActivity(String[] siteName, float[] visitors) {
+        this.siteName = siteName;
+        this.visitors = visitors;
+    }
 
     public void addDataSet() {
         Log.d(TAG, "*** addDataSet function ***");

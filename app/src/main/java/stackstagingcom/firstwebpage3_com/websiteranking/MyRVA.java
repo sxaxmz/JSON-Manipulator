@@ -2,6 +2,7 @@ package stackstagingcom.firstwebpage3_com.websiteranking;
 
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,8 @@ import java.util.ArrayList;
 public class MyRVA extends RecyclerView.Adapter<MyRVA.viewHolder> {
 
     private ArrayList<items> itemsArray;
+
+
 
     public static class viewHolder extends RecyclerView.ViewHolder {
 
@@ -48,8 +51,11 @@ public class MyRVA extends RecyclerView.Adapter<MyRVA.viewHolder> {
         holder.siteName.setText((currentItem.getSiteName()));
         holder.visitDate.setText((currentItem.getVisitDate()));
         holder.visitors.setText((currentItem.getVisiotrs()));
-    }
 
+        int jsonID = itemsArray.size();
+        MainActivity.jsonID = jsonID;
+
+    }
 
     @Override
     public int getItemCount() {
