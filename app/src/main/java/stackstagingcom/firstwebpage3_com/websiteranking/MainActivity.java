@@ -79,7 +79,9 @@ public class MainActivity extends AppCompatActivity {
 
     String startDate = "";
     String endDate = "";
+    String dateVisit = "";
     String fileName = "websiteRanking.json";
+    String id, websiteName, visitDate, numOfVisitors;
 
     Button btnFilter, btnAll, btnChart, btnAdd;
 
@@ -153,7 +155,7 @@ public class MainActivity extends AppCompatActivity {
         dateSetListener = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                startDate = year + "-" + (month+1) + "-" + day;
+                startDate = year + "-" + checkNumberValue(month+1) + "-" + checkNumberValue(day);
                 dtStart.setText(startDate);
             }
         };
@@ -176,7 +178,7 @@ public class MainActivity extends AppCompatActivity {
         dateSetListener2 = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                endDate = year + "-" + (month+1) + "-" + day;
+                endDate = year + "-" + checkNumberValue(month+1) + "-" + checkNumberValue(day);
                 dtEnd.setText(endDate);
             }
         };
@@ -185,7 +187,7 @@ public class MainActivity extends AppCompatActivity {
         getJSON();
 
         if (firstTime == 0){
-            createFile();
+            writeFile();
         }
 
         btnAll.setOnClickListener(new View.OnClickListener() {
@@ -236,6 +238,20 @@ public class MainActivity extends AppCompatActivity {
         saveData();
     }
 
+    public String checkNumberValue(int number){
+        Log.d("MainActivity", "** checkNumberValue function **");
+        String num ="";
+        if (number < 10){
+            num = 0+String.valueOf(number);
+            Log.d("MainActivity", "The Value --> "+ num);
+            return num;
+        } else {
+            num = String.valueOf(number);
+            Log.d("MainActivity", "The Value --> "+ num);
+            return num;
+        }
+    }
+
     public void saveData () {
         Log.d("MainActivity", "** saveData function **");
         SharedPreferences sp = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
@@ -255,12 +271,13 @@ public class MainActivity extends AppCompatActivity {
         firstTime = Integer.parseInt(first_time);
     }
 
-     public void createFile() {
+     public void writeFile() {
         Log.d("MainActivity", "** CreateFile function **");
-        String id;
-        String websiteName;
-        String visitDate;
-        String numOfVisitors;
+
+        String _id;
+        String _websiteName;
+        String _visitDate;
+        String _numOfVisitors;
 
          try {
              JSONObject jsonObject = new JSONObject();
@@ -271,15 +288,15 @@ public class MainActivity extends AppCompatActivity {
 
              for (int i=0; i<items.size();i++){
 
-                  id = items.get(i).getSiteId();
-                  websiteName = items.get(i).getSiteName();
-                  visitDate = items.get(i).getVisitDate();
-                  numOfVisitors = items.get(i).getVisiotrs();
+                  _id = items.get(i).getSiteId();
+                  _websiteName = items.get(i).getSiteName();
+                  _visitDate = items.get(i).getVisitDate();
+                  _numOfVisitors = items.get(i).getVisiotrs();
 
-                     jsonObject.put("id_website", id);
-                     jsonObject.put("website_name", websiteName);
-                     jsonObject.put("visit_date", visitDate);
-                     jsonObject.put("total_visits", numOfVisitors);
+                     jsonObject.put("id_website", _id);
+                     jsonObject.put("website_name", _websiteName);
+                     jsonObject.put("visit_date", _visitDate);
+                     jsonObject.put("total_visits", _numOfVisitors);
 
                      if(!(i == 0)) {
                       fos.write(",".getBytes());
@@ -335,8 +352,8 @@ public class MainActivity extends AppCompatActivity {
         dateSetListener3 = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                startDate = year + "-" + (month+1) + "-" + day;
-                etVisitDate.setText(startDate);
+                dateVisit = year + "-" + checkNumberValue(month+1) + "-" + checkNumberValue(day);
+                etVisitDate.setText(dateVisit);
             }
         };
 
@@ -363,29 +380,61 @@ public class MainActivity extends AppCompatActivity {
     private void dataToJSON () {
         Log.d("MainActivity", "** dataToJSON function **");
 
-        int id = jsonID + 1;
-        String websiteName = etSiteName.getText().toString();
-        String visitDate = etVisitDate.getText().toString();
-        String numOfVisitors = etVisitors.getText().toString();
+        int newId = jsonID +1;
 
-        JSONObject jsonObject = new JSONObject();
+        Log.d("MainActivity", "Read local file");
+        readLocalFile();
 
+        Log.d("MainActivity", "write local file");
         try {
+            JSONObject jsonObject = new JSONObject();
+            OutputStream fos = openFileOutput(fileName, Context.MODE_PRIVATE);
+
+            fos.write("[".getBytes());
+            fos.write("\n".getBytes());
+
+            for (int i=0; i<items.size();i++){
+
+                    //Write the previous items that was in the file
+                    id = items.get(i).getSiteId();
+                    websiteName = items.get(i).getSiteName();
+                    visitDate = items.get(i).getVisitDate();
+                    numOfVisitors = items.get(i).getVisiotrs();
+
+                jsonObject.put("id_website", id);
+                jsonObject.put("website_name", websiteName);
+                jsonObject.put("visit_date", visitDate);
+                jsonObject.put("total_visits", numOfVisitors);
+
+                if(!(i == 0)) {
+                    fos.write(",".getBytes());
+                }
+
+                fos.write(jsonObject.toString().getBytes());
+                fos.write("\n".getBytes());
+
+
+            }
+
+            //Write the new added data
+            id = String.valueOf(newId);
+            fos.write(",".getBytes());
+            websiteName = etSiteName.getText().toString();
+            visitDate = etVisitDate.getText().toString();
+            numOfVisitors = etVisitors.getText().toString();
+
             jsonObject.put("id_website", id);
             jsonObject.put("website_name", websiteName);
             jsonObject.put("visit_date", visitDate);
             jsonObject.put("total_visits", numOfVisitors);
 
-
-            OutputStream fos = openFileOutput(fileName, Context.MODE_PRIVATE);
             fos.write(jsonObject.toString().getBytes());
-            Log.d("MainActivity", "jsonObject -->"+ jsonObject.toString());
-            Log.d("MainActivity", "saved to -->"+ getFilesDir()+""+fileName);
+            fos.write("\n".getBytes());
 
+            fos.write("]".getBytes());
             fos.close();
 
-            Toast.makeText(MainActivity.this, "The Button Works!", Toast.LENGTH_SHORT).show();
-
+            Log.d("MainActivity", "Data has been added!");
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -393,17 +442,55 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
+    }
 
+    public void readLocalFile(){
+        try {
+            Log.d("MainActivity", "** Local file **");
+            items.clear();
+            String json;
+            FileInputStream fis;
+            fis = openFileInput(fileName);
+            // InputStreamReader isr = new InputStreamReader(fis);
+            // BufferedReader br = new BufferedReader(isr);
+            //  StringBuilder sb = new StringBuilder();
+            int size = fis.available();
+            byte[] buffer = new byte[size];
+            fis.read(buffer);
+            fis.close();
+
+            json = new String(buffer, "UTF-8");
+            JSONArray jsonArray = new JSONArray(json);
+
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+
+                String siteId = jsonObject.getString("id_website");
+                String siteName = jsonObject.getString("website_name");
+                String visitDate = jsonObject.getString("visit_date");
+                String visitors = jsonObject.getString("total_visits");
+
+
+                items newItem = new items(siteName, siteId, visitDate, visitors);
+
+                items.add(newItem);
+            }
+
+
+        } catch (IOException | JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public void getJSON () {
 
         Log.d("MainActivity", "** getJSON function **");
-        items.clear();
-        String json;
+
         if (firstTime == 0) {
             try {
+                items.clear();
                 Log.d("MainActivity", "** Assets file **");
+                String json;
                 InputStream is = getAssets().open("websiteRanking.json");
                 int size = is.available();
                 byte [] buffer= new byte[size];
@@ -421,7 +508,6 @@ public class MainActivity extends AppCompatActivity {
                     String visitDate = jsonObject.getString("visit_date");
                     String visitors = jsonObject.getString("total_visits");
 
-
                     items newItem = new items( siteName, siteId, visitDate, visitors);
 
                     items.add(newItem);
@@ -433,58 +519,18 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
 
-            myRV.setHasFixedSize(true);
-            myRVLM = new LinearLayoutManager(MainActivity.this);
-            myRVA = new MyRVA(items);
-
-            myRV.setLayoutManager(myRVLM);
-            myRV.setAdapter(myRVA);
-
-            txtItemCount.setText(String.valueOf(items.size()));
-
         } else if (firstTime == 1) {
-
-            try {
-                Log.d("MainActivity", "** Local file **");
-                FileInputStream fis;
-                fis = openFileInput(fileName);
-               // InputStreamReader isr = new InputStreamReader(fis);
-               // BufferedReader br = new BufferedReader(isr);
-              //  StringBuilder sb = new StringBuilder();
-                int size = fis.available();
-                byte[] buffer = new byte[size];
-                fis.read(buffer);
-                fis.close();
-
-                json = new String(buffer, "UTF-8");
-                JSONArray jsonArray = new JSONArray(json);
-
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    JSONObject jsonObject = jsonArray.getJSONObject(i);
-
-                    String siteId = jsonObject.getString("id_website");
-                    String siteName = jsonObject.getString("website_name");
-                    String visitDate = jsonObject.getString("visit_date");
-                    String visitors = jsonObject.getString("total_visits");
-
-
-                    items newItem = new items(siteName, siteId, visitDate, visitors);
-
-                    items.add(newItem);
-                }
-
-                myRV.setHasFixedSize(true);
-                myRVLM = new LinearLayoutManager(MainActivity.this);
-                myRVA = new MyRVA(items);
-
-                myRV.setLayoutManager(myRVLM);
-                myRV.setAdapter(myRVA);
-
-                txtItemCount.setText(String.valueOf(items.size()));
-            } catch (IOException | JSONException e) {
-                e.printStackTrace();
-            }
+            readLocalFile();
         }
+
+        myRV.setHasFixedSize(true);
+        myRVLM = new LinearLayoutManager(MainActivity.this);
+        myRVA = new MyRVA(items);
+
+        myRV.setLayoutManager(myRVLM);
+        myRV.setAdapter(myRVA);
+
+        txtItemCount.setText(String.valueOf(items.size()));
     }
 
     //Test function for graph
