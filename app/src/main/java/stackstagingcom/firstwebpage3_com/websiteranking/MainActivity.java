@@ -432,6 +432,16 @@ public class MainActivity extends AppCompatActivity {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+
+            myRV.setHasFixedSize(true);
+            myRVLM = new LinearLayoutManager(MainActivity.this);
+            myRVA = new MyRVA(items);
+
+            myRV.setLayoutManager(myRVLM);
+            myRV.setAdapter(myRVA);
+
+            txtItemCount.setText(String.valueOf(items.size()));
+
         } else if (firstTime == 1) {
 
             try {
