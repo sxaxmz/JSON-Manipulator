@@ -607,11 +607,12 @@ public class MainActivity extends AppCompatActivity {
             String checkData = "";
 
             try {
-                InputStream is = getAssets().open("websiteRanking.json");
-                int size = is.available();
+                FileInputStream fis;
+                fis = openFileInput(fileName);
+                int size = fis.available();
                 byte[] buffer = new byte[size];
-                is.read(buffer);
-                is.close();
+                fis.read(buffer);
+                fis.close();
 
                 json = new String(buffer, "UTF-8");
                 JSONArray jsonArray = new JSONArray(json);
