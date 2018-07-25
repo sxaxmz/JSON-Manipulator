@@ -183,7 +183,7 @@ public class MainActivity extends AppCompatActivity {
 
         getJSON();
 
-        JSONtoArray();
+
 
         if (firstTime == 0){
             writeFile();
@@ -530,6 +530,8 @@ public class MainActivity extends AppCompatActivity {
         myRV.setAdapter(myRVA);
 
         txtItemCount.setText(String.valueOf(items.size()));
+
+        JSONtoArray();
     }
 
     //Test function for graph
@@ -550,8 +552,8 @@ public class MainActivity extends AppCompatActivity {
             String _numOfVisitors = items.get(i).getVisiotrs();
 
 
-            Log.d("MainActivity", " websiteName --> " + _websiteName + " --> " + i);
-            Log.d("MainActivity", " totalVisits --> " + _numOfVisitors + " --> " + i);
+            //Log.d("MainActivity", " websiteName --> " + _websiteName + " --> " + i);
+           // Log.d("MainActivity", " totalVisits --> " + _numOfVisitors + " --> " + i);
 
             nameOfSite[i] = _websiteName;
             numOfVisits[i] = Integer.parseInt(_numOfVisitors);
@@ -562,7 +564,7 @@ public class MainActivity extends AppCompatActivity {
         //Keep the unique names to be used as indicators in the array
         Set<String> uniqueString = new HashSet<>(Arrays.asList(nameOfSite));
         siteName = uniqueString.toArray(new String[uniqueString.size()]);
-        Log.d("MainActivity", "siteName array --> " + Arrays.toString(siteName));
+        //Log.d("MainActivity", "siteName array --> " + Arrays.toString(siteName));
         visitors = new float[uniqueString.size()];
 
 
@@ -578,14 +580,14 @@ public class MainActivity extends AppCompatActivity {
                 //Log.d("MainActivity", j + " --> " + nameOfSite[j] + " <--> " + numOfVisits[j]);
 
                 if (nameOfSite[j].equals(siteName[i])) {
-                    Log.d("MainActivity", j + " --> " + nameOfSite[j] + " <--> " + siteName[i]);
+                    //Log.d("MainActivity", j + " --> " + nameOfSite[j] + " <--> " + siteName[i]);
                     visitors[i] += numOfVisits[j];
-                    Log.d("MainActivity", j + " --> " + numOfVisits[j] + " <--> " + visitors[i]);
+                    //Log.d("MainActivity", j + " --> " + numOfVisits[j] + " <--> " + visitors[i]);
                     ++count;
                 }
             }
-            Log.d("MainActivity", "The count for "+siteName[i]+" --> "+count);
-            Log.d("MainActivity", siteName[i]+" <--> "+visitors[i]);
+            //Log.d("MainActivity", "The count for "+siteName[i]+" --> "+count);
+            //Log.d("MainActivity", siteName[i]+" <--> "+visitors[i]);
         }
 
         Log.d("MainActivity", "The final arrays --> "+ Arrays.toString(siteName)+" <--> "+Arrays.toString(visitors));
@@ -647,6 +649,8 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, checkData, Toast.LENGTH_SHORT).show();
 
                 txtItemCount.setText(String.valueOf(items.size()));
+
+                JSONtoArray();
 
             } catch (IOException e) {
                 e.printStackTrace();
