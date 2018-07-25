@@ -35,6 +35,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.Writer;
+import java.lang.reflect.Array;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -540,7 +541,7 @@ public class MainActivity extends AppCompatActivity {
         float[] numOfVisits = new float[items.size()];
 
         siteName = new String[items.size()];
-        visitors = new float[items.size()];
+
 
         for (int i = 0; i < items.size(); i++) {
 
@@ -562,6 +563,8 @@ public class MainActivity extends AppCompatActivity {
         Set<String> uniqueString = new HashSet<>(Arrays.asList(nameOfSite));
         siteName = uniqueString.toArray(new String[uniqueString.size()]);
         Log.d("MainActivity", "siteName array --> " + Arrays.toString(siteName));
+        visitors = new float[uniqueString.size()];
+
 
         //Get the number of visits of the duplicated values and store it
         //In one unique value column
@@ -570,15 +573,22 @@ public class MainActivity extends AppCompatActivity {
         /** with the reference number of the row in the JSON file and count for the unique value quantity **/
         for (int i = 0; i < siteName.length; i++) {
             int count = 0;
+            visitors[i] = 0;
             for (int j = 0; j < nameOfSite.length; j++) {
+                //Log.d("MainActivity", j + " --> " + nameOfSite[j] + " <--> " + numOfVisits[j]);
 
                 if (nameOfSite[j].equals(siteName[i])) {
                     Log.d("MainActivity", j + " --> " + nameOfSite[j] + " <--> " + siteName[i]);
+                    visitors[i] += numOfVisits[j];
+                    Log.d("MainActivity", j + " --> " + numOfVisits[j] + " <--> " + visitors[i]);
                     ++count;
                 }
             }
             Log.d("MainActivity", "The count for "+siteName[i]+" --> "+count);
+            Log.d("MainActivity", siteName[i]+" <--> "+visitors[i]);
         }
+
+        Log.d("MainActivity", "The final arrays --> "+ Arrays.toString(siteName)+" <--> "+Arrays.toString(visitors));
     }
 
     public void filterJSON (String startDate, String endDate) {
