@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Description;
@@ -18,8 +19,10 @@ import java.util.ArrayList;
 public class chartActivity extends AppCompatActivity {
 
     public static String TAG = "chartActivity";
-    String [] siteName;
-    float[] visitors;
+    ArrayList<items> items;
+
+     String [] siteName;
+     float[] visitors;
 
     PieChart pieChart;
 
@@ -30,41 +33,40 @@ public class chartActivity extends AppCompatActivity {
         Log.d(TAG, "*** OnCreate method ***");
 
         pieChart = findViewById(R.id.pieChart);
+        siteName = MainActivity.siteName;
+        visitors = MainActivity.visitors;
+
 
         Description description = new Description();
         description.setTextColor(ColorTemplate.VORDIPLOM_COLORS[2]); description.setText("Sites by visit");
         pieChart.setDescription(description);
         pieChart.setRotationEnabled(true);
-        pieChart.setHoleRadius(5f);
+        pieChart.setHoleRadius(35f);
         pieChart.setTransparentCircleAlpha(0);
-        pieChart.setCenterText("Sites by visit");
-        pieChart.setCenterTextSize(14);
-        pieChart.setCenterTextColor(000000);
+        pieChart.setCenterText("Sites by visits");
+        pieChart.setCenterTextSize(18);
+        pieChart.setCenterTextColor(Color.BLACK);
         pieChart.setDrawEntryLabels(true);
 
         addDataSet();
-    }
 
-    public chartActivity(String[] siteName, float[] visitors) {
-        this.siteName = siteName;
-        this.visitors = visitors;
     }
 
     public void addDataSet() {
         Log.d(TAG, "*** addDataSet function ***");
-        ArrayList<PieEntry> yEntry = new ArrayList<>();
-        ArrayList<String> xEntry = new ArrayList<>();
+        ArrayList<PieEntry> siteVisits = new ArrayList<>();
+        ArrayList<String> suteNames = new ArrayList<>();
 
         for (int i = 0; i<visitors.length; i++){
-            yEntry.add(new PieEntry(visitors[i]));
+            siteVisits.add(new PieEntry(visitors[i]));
         }
 
         for (int i = 0; i<siteName.length; i++){
-            xEntry.add(siteName[i]);
+            suteNames.add(siteName[i]);
         }
 
         //Data set
-        PieDataSet pieDataSet = new PieDataSet(yEntry, "Sites by visit");
+        PieDataSet pieDataSet = new PieDataSet(siteVisits, "Sites by visit");
         pieDataSet.setSliceSpace(2);
         pieDataSet.setValueTextSize(12);
 
@@ -73,6 +75,11 @@ public class chartActivity extends AppCompatActivity {
         colors.add(Color.BLUE);
         colors.add(Color.RED);
         colors.add(Color.GREEN);
+        colors.add(Color.MAGENTA);
+        colors.add(Color.DKGRAY);
+        colors.add(Color.CYAN);
+        colors.add(Color.YELLOW);
+        colors.add(Color.LTGRAY);
 
         pieDataSet.setColors(colors);
 

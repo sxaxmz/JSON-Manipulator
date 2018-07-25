@@ -67,8 +67,6 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView.Adapter myRVA;
     private RecyclerView.LayoutManager myRVLM;
 
-    ArrayList<items> items;
-
     private OkHttpClient client;
 
     private TextView dtStart;
@@ -88,9 +86,10 @@ public class MainActivity extends AppCompatActivity {
 
     TextView txtVisitors, txtSiteName, txtItemCount, etVisitDate;
 
-    String[] siteName;
-    float[] visitors;
+    public static String[] siteName;
+    public static float[] visitors;
 
+    ArrayList<items> items;
     ArrayList<String> allDates = new ArrayList();
 
     FloatingActionButton fab;
@@ -236,6 +235,7 @@ public class MainActivity extends AppCompatActivity {
 
         saveData();
     }
+
 
     public String checkNumberValue(int number){
         Log.d("MainActivity", "** checkNumberValue function **");
@@ -703,6 +703,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void sortTotalVisits () {
+        Log.d("MainActivity", "*** sortTotalVisits function ***");
         Collections.sort(items, new Comparator<stackstagingcom.firstwebpage3_com.websiteranking.items>() {
             @Override
             public int compare(items items, items t1) {
@@ -715,6 +716,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void sortWebsitename () {
+        Log.d("MainActivity", "*** sortWebsitename function ***");
         Collections.sort(items, new Comparator<stackstagingcom.firstwebpage3_com.websiteranking.items>() {
             @Override
             public int compare(items items, items t1) {
@@ -727,7 +729,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void viewChart () {
         Log.d("MainActivity", "*** ViewChart ***");
-        new chartActivity(siteName, visitors);
         Intent intent = new Intent(MainActivity.this, chartActivity.class);
         startActivity(intent);
     }
