@@ -127,9 +127,6 @@ public class MainActivity extends AppCompatActivity {
         txtSiteName = findViewById(R.id.textSiteName);
         txtItemCount = findViewById(R.id.txtItemCount);
 
-        siteName = new String[items.size()];
-        visitors = new float[items.size()];
-
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -186,6 +183,8 @@ public class MainActivity extends AppCompatActivity {
 
         getJSON();
 
+        JSONtoArray();
+
         if (firstTime == 0){
             writeFile();
         }
@@ -227,14 +226,13 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 //need modification
                 if ( (siteName != null) && (visitors != null) ) {
-                    Toast.makeText(MainActivity.this, "Chart is not working at the moment!", Toast.LENGTH_SHORT).show();
-                } else {
                     viewChart();
+                } else {
+                    Toast.makeText(MainActivity.this, "Chart is not working at the moment!", Toast.LENGTH_SHORT).show();
                 }
             }
         });
 
-        //JSONtoArray();
         saveData();
     }
 
@@ -382,10 +380,10 @@ public class MainActivity extends AppCompatActivity {
 
         int newId = jsonID +1;
 
-        Log.d("MainActivity", "Read local file");
+        Log.d("MainActivity", "Read from local file");
         readLocalFile();
 
-        Log.d("MainActivity", "write local file");
+        Log.d("MainActivity", "write to local file");
         try {
             JSONObject jsonObject = new JSONObject();
             OutputStream fos = openFileOutput(fileName, Context.MODE_PRIVATE);
@@ -536,64 +534,51 @@ public class MainActivity extends AppCompatActivity {
     //Test function for graph
     public void JSONtoArray () {
 
-        String json;
+        Log.d("MainActivity", "** JSONtoArray function **");
 
-        try {
-            InputStream is = getAssets().open("websiteRanking.json");
-            int size = is.available();
-            byte [] buffer= new byte[size];
-            is.read(buffer);
-            is.close();
+        String[] nameOfSite = new String[items.size()];
+        float[] numOfVisits = new float[items.size()];
 
-            json = new String(buffer,"UTF-8");
-            JSONArray  jsonArray = new JSONArray(json);
+        siteName = new String[items.size()];
+        visitors = new float[items.size()];
 
+        for (int i = 0; i < items.size(); i++) {
 
-            for (int i=0; i<jsonArray.length();i++){
-                JSONObject jsonObject = jsonArray.getJSONObject(i);
-
-                //Get the site names from JSON list
-                //Add it to siteNames array
-                String websiteName = jsonObject.getString("website_name");
-                String totalVisitors = jsonObject.getString("total_visits");
-
-                Log.d("MainActivity", " websiteName --> "+websiteName);
-                Log.d("MainActivity", " totalVisits --> "+totalVisitors);
-
-                //Fix the error
-                //java.lang.ArrayIndexOutOfBoundsException: length=0; index=0
-                siteName [i] = websiteName;
-                visitors [i] = Integer.parseInt(totalVisitors);
-
-                for (int j = 0; j<siteName.length;j++){
-                    //Get the website names from siteName array
-                    //Keep the unique names to be used as indicators in the array
-                    Set<String> uniqueString = new HashSet<String>(Arrays.asList(siteName));
-                    Log.d("MainActivity", siteName+" <-- comparedTo --> "+uniqueString);
-
-                    //Get the number of visits of the duplicated values and store it
-                    //In one unique value column/
-                }
+            //Add data to siteNames & visitors array
+            String _websiteName = items.get(i).getSiteName();
+            String _numOfVisitors = items.get(i).getVisiotrs();
 
 
-                if (jsonObject.getString("visit_date").equals(startDate) || jsonObject.getString("visit_date").equals(endDate) ) {
-                    String siteId = jsonObject.getString("id_website");
-                    String siteName = jsonObject.getString("website_name");
-                    String visitDate = jsonObject.getString("visit_date");
-                    String visitors = jsonObject.getString("total_visits");
+            Log.d("MainActivity", " websiteName --> " + _websiteName + " --> " + i);
+            Log.d("MainActivity", " totalVisits --> " + _numOfVisitors + " --> " + i);
 
-                    items newItem = new items(siteName, siteId, visitDate, visitors);
-                    items.add(newItem);
-                    Log.d("MainActivity ->", siteName+" "+ siteId+" "+ visitDate+" "+ visitors);
-                }
-            }
+            nameOfSite[i] = _websiteName;
+            numOfVisits[i] = Integer.parseInt(_numOfVisitors);
 
-        } catch (IOException e){
-            e.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
+            //Log.d("MainActivity", nameOfSite[i]+" <-- with the --> "+numOfVisits[i]);
         }
 
+        //Keep the unique names to be used as indicators in the array
+        Set<String> uniqueString = new HashSet<>(Arrays.asList(nameOfSite));
+        siteName = uniqueString.toArray(new String[uniqueString.size()]);
+        Log.d("MainActivity", "siteName array --> " + Arrays.toString(siteName));
+
+        //Get the number of visits of the duplicated values and store it
+        //In one unique value column
+
+        /** This section will filter the JSON file to give us the list of all the unique values **/
+        /** with the reference number of the row in the JSON file and count for the unique value quantity **/
+        for (int i = 0; i < siteName.length; i++) {
+            int count = 0;
+            for (int j = 0; j < nameOfSite.length; j++) {
+
+                if (nameOfSite[j].equals(siteName[i])) {
+                    Log.d("MainActivity", j + " --> " + nameOfSite[j] + " <--> " + siteName[i]);
+                    ++count;
+                }
+            }
+            Log.d("MainActivity", "The count for "+siteName[i]+" --> "+count);
+        }
     }
 
     public void filterJSON (String startDate, String endDate) {
@@ -735,7 +720,6 @@ public class MainActivity extends AppCompatActivity {
         new chartActivity(siteName, visitors);
         Intent intent = new Intent(MainActivity.this, chartActivity.class);
         startActivity(intent);
-        //chartActivity(siteName, visitors);
     }
 
 }
