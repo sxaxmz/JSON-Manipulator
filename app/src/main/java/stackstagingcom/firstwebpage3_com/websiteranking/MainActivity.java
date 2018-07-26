@@ -736,6 +736,8 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(MainActivity.this, chartActivity.class);
         intent.putExtra("startDate", startDate);
         intent.putExtra("endDate", endDate);
+        intent.putExtra("numericValue", visitors);
+        intent.putExtra("stringValue", siteName);
         startActivity(intent);
     }
 

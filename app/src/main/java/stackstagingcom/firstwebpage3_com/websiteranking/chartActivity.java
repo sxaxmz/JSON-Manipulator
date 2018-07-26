@@ -38,8 +38,8 @@ public class chartActivity extends AppCompatActivity {
         Log.d(TAG, "*** OnCreate method ***");
 
         pieChart = findViewById(R.id.pieChart);
-        siteName = MainActivity.siteName;
-        visitors = MainActivity.visitors;
+        siteName = getIntent().getStringArrayExtra("stringValue");
+        visitors = getIntent().getFloatArrayExtra("numericValue");
 
         startDate = getIntent().getStringExtra("startDate");
         endDate = getIntent().getStringExtra("endDate");
