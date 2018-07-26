@@ -107,7 +107,6 @@ public class MainActivity extends AppCompatActivity {
 
         loadData();
 
-
         fab = findViewById(R.id.fab);
 
         client = new OkHttpClient();
@@ -126,6 +125,7 @@ public class MainActivity extends AppCompatActivity {
         txtVisitors = findViewById(R.id.textVisits);
         txtSiteName = findViewById(R.id.textSiteName);
         txtItemCount = findViewById(R.id.txtItemCount);
+
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -734,6 +734,8 @@ public class MainActivity extends AppCompatActivity {
     public void viewChart () {
         Log.d("MainActivity", "*** ViewChart ***");
         Intent intent = new Intent(MainActivity.this, chartActivity.class);
+        intent.putExtra("startDate", startDate);
+        intent.putExtra("endDate", endDate);
         startActivity(intent);
     }
 

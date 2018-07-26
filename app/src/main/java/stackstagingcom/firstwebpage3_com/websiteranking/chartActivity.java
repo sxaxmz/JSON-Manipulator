@@ -5,18 +5,26 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
+
 import java.util.ArrayList;
 
 public class chartActivity extends AppCompatActivity {
 
     public static String TAG = "chartActivity";
     ArrayList<items> items;
+
+    String startDate, endDate, dates;
 
      String [] siteName;
      float[] visitors;
@@ -33,11 +41,21 @@ public class chartActivity extends AppCompatActivity {
         siteName = MainActivity.siteName;
         visitors = MainActivity.visitors;
 
+        startDate = getIntent().getStringExtra("startDate");
+        endDate = getIntent().getStringExtra("endDate");
+
+        dates = "from "+startDate +" to "+ endDate+".";
+
 
         Description description = new Description();
         description.setTextColor(Color.BLACK);
-        description.setText("Chart is based on data-set from previous activity.");
-        description.setTextSize(18);
+        if (startDate.equals("") && endDate.equals("")){
+            description.setText("Chart is based on data-set for all dates recorded.");
+            description.setTextSize(18);
+        } else {
+            description.setText("Chart is based on data-set "+dates);
+            description.setTextSize(15);
+        }
         description.setPosition(1060,1500);
 
         pieChart.setDescription(description);
@@ -53,6 +71,35 @@ public class chartActivity extends AppCompatActivity {
         pieChart.setTransparentCircleRadius(45f);
         pieChart.setExtraOffsets(0,0,0,-100);
 
+
+        pieChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+            @Override
+            public void onValueSelected(Entry e, Highlight h) {
+                Log.d(TAG, "** onValueSelected **");
+                Log.d(TAG, "Entry --> "+e.toString());
+                Log.d(TAG, "Highlight --> "+h.toString());
+
+                //get numeric value
+                int numericValue = e.toString().indexOf("y:");
+                String numValue = e.toString().substring(numericValue + 3);
+
+                //get string value
+                for(int i = 0; i<visitors.length; i++){
+                    if(visitors[i] == Float.parseFloat(numValue)){
+                        numericValue = i;
+                        break;
+                    }
+                }
+                String stringValue = siteName[numericValue];
+                Toast.makeText(chartActivity.this, "Website: "+stringValue+"\n"+ " Visitors: "+numValue, Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "Website: "+stringValue+" <--> "+" Visitors: "+numValue);
+            }
+
+            @Override
+            public void onNothingSelected (){
+                Log.d(TAG, "** onNothingSelected **");
+            }
+        });
         addDataSet();
 
     }
