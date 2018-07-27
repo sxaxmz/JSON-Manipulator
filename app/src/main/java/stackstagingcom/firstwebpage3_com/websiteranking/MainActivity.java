@@ -23,6 +23,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -88,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
 
     Button btnFilter, btnAll, btnChart, btnAdd;
 
-    TextView txtVisitors, txtSiteName, txtItemCount, etVisitDate;
+    TextView txtVisitors, txtSiteName, txtItemCount, etVisitDate, txtVisitDate;
 
     public static String[] siteName;
     public static float[] visitors;
@@ -109,6 +110,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Log.d("MainActivity", "** onCreate function **");
 
         loadData();
 
@@ -125,33 +127,25 @@ public class MainActivity extends AppCompatActivity {
 
         myRV = findViewById(R.id.RV);
 
-        dtStart = findViewById(R.id.dtStart);
-        dtEnd = findViewById(R.id.dtEnd);
-
-        btnFilter = findViewById(R.id.btnFilter);
-        btnAll = findViewById(R.id.btnAll);
-        btnChart = findViewById(R.id.btnChart);
-
         txtVisitors = findViewById(R.id.textVisits);
         txtSiteName = findViewById(R.id.textSiteName);
         txtItemCount = findViewById(R.id.txtItemCount);
+        txtVisitDate = findViewById(R.id.txtVisitDate);
 
 
         fab_add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 addData();
+                fab_menu.close(true);
             }
         });
 
         fab_search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (startDate == "" || endDate == "") {
-                    Toast.makeText(MainActivity.this, "Please select a date!", Toast.LENGTH_SHORT).show();
-                } else {
-                    filterJSON(startDate, endDate);
-                }
+                filterJSONDialog();
+                fab_menu.close(true);
             }
         });
 
@@ -159,6 +153,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 getJSON();
+                fab_menu.close(true);
             }
         });
 
@@ -167,6 +162,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if ( (siteName != null) && (visitors != null) ) {
                     viewChart();
+                    fab_menu.close(true);
                 } else {
                     Toast.makeText(MainActivity.this, "Chart is not working at the moment!", Toast.LENGTH_SHORT).show();
                 }
@@ -177,55 +173,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 creatorLink();
+                fab_menu.close(true);
             }
         });
 
-        dtStart.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Calendar cal = Calendar.getInstance();
-                int year = cal.get(Calendar.YEAR);
-                int month = cal.get(Calendar.MONTH);
-                int day = cal.get(Calendar.DAY_OF_MONTH);
-
-                DatePickerDialog dialog = new DatePickerDialog(MainActivity.this, android.R.style.Theme_DeviceDefault_Dialog,
-                         dateSetListener,year,month,day);
-                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                dialog.show();
-            }
-        });
-
-        dateSetListener = new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                startDate = year + "-" + checkNumberValue(month+1) + "-" + checkNumberValue(day);
-                dtStart.setText(startDate);
-            }
-        };
-
-        dtEnd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Calendar cal = Calendar.getInstance();
-                int year = cal.get(Calendar.YEAR);
-                int month = cal.get(Calendar.MONTH);
-                int day = cal.get(Calendar.DAY_OF_MONTH);
-
-                DatePickerDialog dialog = new DatePickerDialog(MainActivity.this, android.R.style.Theme_DeviceDefault_Dialog,
-                        dateSetListener2,year,month,day);
-                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                dialog.show();
-            }
-        });
-
-        dateSetListener2 = new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                endDate = year + "-" + checkNumberValue(month+1) + "-" + checkNumberValue(day);
-                dtEnd.setText(endDate);
-            }
-        };
-
+        fab_menu.setClosedOnTouchOutside(true);
 
         getJSON();
 
@@ -234,24 +186,6 @@ public class MainActivity extends AppCompatActivity {
         if (firstTime == 0){
             writeFile();
         }
-
-        btnAll.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getJSON();
-            }
-        });
-
-        btnFilter.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (startDate == "" || endDate == "") {
-                    Toast.makeText(MainActivity.this, "Please select a date!", Toast.LENGTH_SHORT).show();
-                } else {
-                    filterJSON(startDate, endDate);
-                }
-            }
-        });
 
         txtVisitors.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -267,14 +201,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        btnChart.setOnClickListener(new View.OnClickListener() {
+        txtVisitDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if ( (siteName != null) && (visitors != null) ) {
-                    viewChart();
-                } else {
-                    Toast.makeText(MainActivity.this, "Chart is not working at the moment!", Toast.LENGTH_SHORT).show();
-                }
+                sortVisitDate();
             }
         });
 
@@ -364,6 +294,80 @@ public class MainActivity extends AppCompatActivity {
              e.printStackTrace();
          }
          ++firstTime;
+     }
+
+     public void filterJSONDialog () {
+         Log.d("MainActivity", "** filterJSONDialog function **");
+
+         adb = new AlertDialog.Builder(MainActivity.this);
+         View adbView = getLayoutInflater().inflate(R.layout.filter_dialog, null);
+
+         dtStart = adbView.findViewById(R.id.dtStart);
+         dtEnd = adbView.findViewById(R.id.dtEnd);
+
+         btnFilter = adbView.findViewById(R.id.btnFilter);
+
+         adb.setView(adbView);
+         final AlertDialog ad = adb.create();
+         ad.show();
+
+         dtStart.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View view) {
+                 Calendar cal = Calendar.getInstance();
+                 int year = cal.get(Calendar.YEAR);
+                 int month = cal.get(Calendar.MONTH);
+                 int day = cal.get(Calendar.DAY_OF_MONTH);
+
+                 DatePickerDialog dialog = new DatePickerDialog(MainActivity.this, android.R.style.Theme_DeviceDefault_Dialog,
+                         dateSetListener,year,month,day);
+                 dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                 dialog.show();
+             }
+         });
+
+         dateSetListener = new DatePickerDialog.OnDateSetListener() {
+             @Override
+             public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+                 startDate = year + "-" + checkNumberValue(month+1) + "-" + checkNumberValue(day);
+                 dtStart.setText(startDate);
+             }
+         };
+
+         dtEnd.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View view) {
+                 Calendar cal = Calendar.getInstance();
+                 int year = cal.get(Calendar.YEAR);
+                 int month = cal.get(Calendar.MONTH);
+                 int day = cal.get(Calendar.DAY_OF_MONTH);
+
+                 DatePickerDialog dialog = new DatePickerDialog(MainActivity.this, android.R.style.Theme_DeviceDefault_Dialog,
+                         dateSetListener2,year,month,day);
+                 dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                 dialog.show();
+             }
+         });
+
+         dateSetListener2 = new DatePickerDialog.OnDateSetListener() {
+             @Override
+             public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+                 endDate = year + "-" + checkNumberValue(month+1) + "-" + checkNumberValue(day);
+                 dtEnd.setText(endDate);
+             }
+         };
+
+         btnFilter.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View view) {
+                 if (startDate == "" || endDate == "") {
+                     Toast.makeText(MainActivity.this, "Please select a date!", Toast.LENGTH_SHORT).show();
+                 } else {
+                     filterJSON(startDate, endDate);
+                     ad.dismiss();
+                 }
+             }
+         });
      }
 
     public void addData () {
@@ -774,6 +778,18 @@ public class MainActivity extends AppCompatActivity {
         });
         myRVA.notifyDataSetChanged();
         Toast.makeText(MainActivity.this, "The list has been sorted Alphabetically", Toast.LENGTH_SHORT).show();
+    }
+
+    public void sortVisitDate () {
+        Log.d("MainActivity", "*** sortVisitDate function ***");
+        Collections.sort(items, new Comparator<stackstagingcom.firstwebpage3_com.websiteranking.items>() {
+            @Override
+            public int compare(items items, items t1) {
+                return items.getVisitDate().compareTo(t1.getVisitDate());
+            }
+        });
+         myRVA.notifyDataSetChanged();
+         Toast.makeText(MainActivity.this, "The list has been sorted by date", Toast.LENGTH_SHORT).show();
     }
 
     public void viewChart () {
