@@ -16,6 +16,7 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.InputStream;
 
+import android.net.Uri;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -28,6 +29,9 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.github.clans.fab.FloatingActionMenu;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -92,7 +96,8 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<items> items;
     ArrayList<String> allDates = new ArrayList();
 
-    FloatingActionButton fab;
+    com.github.clans.fab.FloatingActionButton fab_add, fab_search, fab_refresh, fab_graph, fab_creator;
+    FloatingActionMenu fab_menu;
 
     EditText etSiteName, etVisitors;
 
@@ -107,7 +112,12 @@ public class MainActivity extends AppCompatActivity {
 
         loadData();
 
-        fab = findViewById(R.id.fab);
+        fab_menu = findViewById(R.id.fab_menu);
+        fab_add = findViewById(R.id.fab_add);
+        fab_search = findViewById(R.id.fab_search);
+        fab_refresh = findViewById(R.id.fab_refresh);
+        fab_graph = findViewById(R.id.fab_graph);
+        fab_creator = findViewById(R.id.fab_creator);
 
         client = new OkHttpClient();
 
@@ -127,10 +137,46 @@ public class MainActivity extends AppCompatActivity {
         txtItemCount = findViewById(R.id.txtItemCount);
 
 
-        fab.setOnClickListener(new View.OnClickListener() {
+        fab_add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 addData();
+            }
+        });
+
+        fab_search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (startDate == "" || endDate == "") {
+                    Toast.makeText(MainActivity.this, "Please select a date!", Toast.LENGTH_SHORT).show();
+                } else {
+                    filterJSON(startDate, endDate);
+                }
+            }
+        });
+
+        fab_refresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getJSON();
+            }
+        });
+
+        fab_graph.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if ( (siteName != null) && (visitors != null) ) {
+                    viewChart();
+                } else {
+                    Toast.makeText(MainActivity.this, "Chart is not working at the moment!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        fab_creator.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                creatorLink();
             }
         });
 
@@ -224,7 +270,6 @@ public class MainActivity extends AppCompatActivity {
         btnChart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //need modification
                 if ( (siteName != null) && (visitors != null) ) {
                     viewChart();
                 } else {
@@ -739,6 +784,12 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra("numericValue", visitors);
         intent.putExtra("stringValue", siteName);
         startActivity(intent);
+    }
+
+    public void creatorLink () {
+        Log.d("MainActivity", "*** creatorLink ***");
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.github.com/sxaxmz"));
+        startActivity(browserIntent);
     }
 
 }
