@@ -5,7 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    tools:showIn="@layout/main_activity">
 
 
     <RelativeLayout
@@ -134,7 +135,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         fab:menu_animationDelayPerItem="50"
-        fab:menu_backgroundColor="@android:color/transparent"
+        fab:menu_backgroundColor="@color/white_transparent"
         fab:menu_buttonSpacing="0dp"
         fab:menu_colorNormal="#DA4336"
         fab:menu_colorPressed="#E75043"
