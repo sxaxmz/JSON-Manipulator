@@ -7,40 +7,29 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.InputStream;
-
 import android.net.Uri;
-import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.github.clans.fab.FloatingActionMenu;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.Writer;
-import java.lang.reflect.Array;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -52,10 +41,8 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
-
 import okhttp3.OkHttpClient;
-
-import static android.provider.Telephony.Mms.Part.TEXT;
+import android.support.v7.app.ActionBar;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -87,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
     String fileName = "websiteRanking.json";
     String id, websiteName, visitDate, numOfVisitors;
 
-    Button btnFilter, btnAll, btnChart, btnAdd;
+    Button btnFilter, btnAdd;
 
     TextView txtVisitors, txtSiteName, txtItemCount, etVisitDate, txtVisitDate;
 
@@ -106,11 +93,26 @@ public class MainActivity extends AppCompatActivity {
 
     int firstTime = 0;
 
+    ActionBar actionBar;
+
+    Window window;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Log.d("MainActivity", "** onCreate function **");
+        Log.d("MainActivity", "** onCreate method **");
+
+        actionBar = getSupportActionBar();
+        ColorDrawable cd = new ColorDrawable(getResources().getColor(R.color.appColor));
+        actionBar.setBackgroundDrawable(cd);
+
+        //StatusBar
+        window  = MainActivity.this.getWindow();
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS );
+        window.setStatusBarColor(ContextCompat.getColor(MainActivity.this,R.color.appColor));
+
 
         loadData();
 

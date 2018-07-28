@@ -1,10 +1,15 @@
 package stackstagingcom.firstwebpage3_com.websiteranking;
 
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.PieChart;
@@ -31,11 +36,25 @@ public class chartActivity extends AppCompatActivity {
 
     PieChart pieChart;
 
+    ActionBar actionBar;
+
+    Window window;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.chart);
         Log.d(TAG, "*** OnCreate method ***");
+
+        actionBar = getSupportActionBar();
+        ColorDrawable cd = new ColorDrawable(getResources().getColor(R.color.appColor));
+        actionBar.setBackgroundDrawable(cd);
+
+        //StatusBar
+        window = chartActivity.this.getWindow();
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.setStatusBarColor(ContextCompat.getColor(chartActivity.this,R.color.appColor));
 
         pieChart = findViewById(R.id.pieChart);
         siteName = getIntent().getStringArrayExtra("stringValue");
