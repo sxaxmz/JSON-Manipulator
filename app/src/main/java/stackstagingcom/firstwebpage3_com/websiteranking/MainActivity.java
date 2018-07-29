@@ -367,18 +367,24 @@ public class MainActivity extends AppCompatActivity {
              @Override
              public void onClick(View view) {
                  filterName = etFilterName.getText().toString().trim();
-                 Log.d("MainActivity", "filterName --> "+filterName);
-                 if (startDate.equals("") || endDate.equals("")) {
-                     Toast.makeText(MainActivity.this, "Please select a date!", Toast.LENGTH_SHORT).show();
-                 }else{
-                     filterType = 2;
+                 Log.d("MainActivity", "filterName --> " + filterName);
+
+                 if (!startDate.equals("") && !endDate.equals("") && !filterName.equals("")) {
+                     filterType=3;
                      filterJSON(startDate, endDate, filterName);
                      ad.dismiss();
-                 }
-
-                 if (filterName.equals("")) {
-                     Toast.makeText(MainActivity.this, "Please fill required fields!", Toast.LENGTH_SHORT).show();
                  } else {
+                     if (startDate.equals("") || endDate.equals("")) {
+                         Toast.makeText(MainActivity.this, "Please select a date!", Toast.LENGTH_SHORT).show();
+                     } else {
+                         filterType = 2;
+                         filterJSON(startDate, endDate, filterName);
+                         ad.dismiss();
+                     }
+
+                     if (filterName.equals("")) {
+                         Toast.makeText(MainActivity.this, "Please fill required fields!", Toast.LENGTH_SHORT).show();
+                     } else {
                          filterType = 1;
                          filterJSON(startDate, endDate, filterName);
                          ad.dismiss();
@@ -388,6 +394,7 @@ public class MainActivity extends AppCompatActivity {
                      startDate = "";
                      endDate = "";
                      filterName = "";
+                 }
              }
          });
      }
@@ -669,6 +676,7 @@ public class MainActivity extends AppCompatActivity {
         Log.d("MainActivity", "** filterJSON function **");
             String json;
             String checkData = "";
+            String eachDate = "";
             items.clear();
 
             try {
@@ -701,21 +709,14 @@ public class MainActivity extends AppCompatActivity {
 
                         }
                     }
-                    if (items.size() == 0){
-                        checkData = "NO DATA!";
-                    } else {
-                        checkData = "UPDATED!";
-                    }
-
                 } else if (filterType == 2){
                     Log.d("MainActivity", "** filterType "+Integer.toString(filterType)+" **");
                     getDaysBetween(startDate, endDate);
 
-                    String eachDate = "";
+
 
                     for (int j = 0; j < allDates.size(); j++) {
                         eachDate = String.valueOf(allDates.get(j));
-
                         //Log.d("MainActivity", "allDates.get(j) result --> "+allDates.get(j));
                         //Log.d("MainActivity", "items from JSON --> " + items.get(j)+ " item --> "+ j);
 
@@ -737,12 +738,38 @@ public class MainActivity extends AppCompatActivity {
                             }
                         }
                     }
+                } else if (filterType == 3) {
+                    getDaysBetween(startDate, endDate);
+                    for (int j = 0; j < allDates.size(); j++) {
+                        eachDate = String.valueOf(allDates.get(j));
 
-                    if (items.size() == 0){
-                        checkData = "NO DATA!";
-                    } else {
-                        checkData = "UPDATED!";
+                        //Log.d("MainActivity", "allDates.get(j) result --> "+allDates.get(j));
+                        //Log.d("MainActivity", "items from JSON --> " + items.get(j)+ " item --> "+ j);
+
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            JSONObject jsonObject = jsonArray.getJSONObject(i);
+
+                            if (jsonObject.getString("visit_date").equals(eachDate) && jsonObject.getString("website_name").equals(filterName)) {
+                                String siteId = jsonObject.getString("id_website");
+                                String siteName = jsonObject.getString("website_name");
+                                String visitDate = jsonObject.getString("visit_date");
+                                String visitors = jsonObject.getString("total_visits");
+
+
+                                items newItem = new items(siteName, siteId, visitDate, visitors);
+                                items.add(newItem);
+                                Log.d("MainActivity ->", "within the date " + eachDate + " --> " + siteName + " " + siteId + " " + visitDate + " " + visitors);
+
+
+                            }
+                        }
                     }
+                }
+
+                if (items.size() == 0){
+                    checkData = "NO DATA!";
+                } else {
+                    checkData = "UPDATED!";
                 }
 
                 myRVA.notifyDataSetChanged();
