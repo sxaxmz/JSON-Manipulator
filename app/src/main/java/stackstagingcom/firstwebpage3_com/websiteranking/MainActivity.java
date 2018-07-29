@@ -71,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
     String startDate = "";
     String endDate = "";
     String dateVisit = "";
+    String filterName = "";
     String fileName = "websiteRanking.json";
     String id, websiteName, visitDate, numOfVisitors;
 
@@ -87,11 +88,12 @@ public class MainActivity extends AppCompatActivity {
     com.github.clans.fab.FloatingActionButton fab_add, fab_search, fab_refresh, fab_graph, fab_creator;
     FloatingActionMenu fab_menu;
 
-    EditText etSiteName, etVisitors;
+    EditText etSiteName, etVisitors, etFilterName;
 
     AlertDialog.Builder adb;
 
     int firstTime = 0;
+    int filterType;
 
     ActionBar actionBar;
 
@@ -306,7 +308,7 @@ public class MainActivity extends AppCompatActivity {
 
          dtStart = adbView.findViewById(R.id.dtStart);
          dtEnd = adbView.findViewById(R.id.dtEnd);
-
+         etFilterName = adbView.findViewById(R.id.etFilterName);
          btnFilter = adbView.findViewById(R.id.btnFilter);
 
          adb.setView(adbView);
@@ -359,15 +361,33 @@ public class MainActivity extends AppCompatActivity {
              }
          };
 
+
+
          btnFilter.setOnClickListener(new View.OnClickListener() {
              @Override
              public void onClick(View view) {
-                 if (startDate == "" || endDate == "") {
+                 filterName = etFilterName.getText().toString().trim();
+                 Log.d("MainActivity", "filterName --> "+filterName);
+                 if (startDate.equals("") || endDate.equals("")) {
                      Toast.makeText(MainActivity.this, "Please select a date!", Toast.LENGTH_SHORT).show();
-                 } else {
-                     filterJSON(startDate, endDate);
+                 }else{
+                     filterType = 2;
+                     filterJSON(startDate, endDate, filterName);
                      ad.dismiss();
                  }
+
+                 if (filterName.equals("")) {
+                     Toast.makeText(MainActivity.this, "Please fill required fields!", Toast.LENGTH_SHORT).show();
+                 } else {
+                         filterType = 1;
+                         filterJSON(startDate, endDate, filterName);
+                         ad.dismiss();
+                     }
+
+                     //reset search
+                     startDate = "";
+                     endDate = "";
+                     filterName = "";
              }
          });
      }
@@ -644,15 +664,12 @@ public class MainActivity extends AppCompatActivity {
         Log.d("MainActivity", "The final arrays --> "+ Arrays.toString(siteName)+" <--> "+Arrays.toString(visitors));
     }
 
-    public void filterJSON (String startDate, String endDate) {
+    public void filterJSON (String startDate, String endDate, String filterName) {
 
         Log.d("MainActivity", "** filterJSON function **");
             String json;
-
-            getDaysBetween(startDate, endDate);
-
-            String eachDate;
             String checkData = "";
+            items.clear();
 
             try {
                 FileInputStream fis;
@@ -665,7 +682,37 @@ public class MainActivity extends AppCompatActivity {
                 json = new String(buffer, "UTF-8");
                 JSONArray jsonArray = new JSONArray(json);
 
-                items.clear();
+                if (filterType == 1) {
+                    Log.d("MainActivity", "** filterType "+Integer.toString(filterType)+" **");
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+
+                        if (jsonObject.getString("website_name").equals(filterName)) {
+
+                            String siteId = jsonObject.getString("id_website");
+                            String siteName = jsonObject.getString("website_name");
+                            String visitDate = jsonObject.getString("visit_date");
+                            String visitors = jsonObject.getString("total_visits");
+
+
+                            items newItem = new items(siteName, siteId, visitDate, visitors);
+
+                            items.add(newItem);
+
+                        }
+                    }
+                    if (items.size() == 0){
+                        checkData = "NO DATA!";
+                    } else {
+                        checkData = "UPDATED!";
+                    }
+
+                } else if (filterType == 2){
+                    Log.d("MainActivity", "** filterType "+Integer.toString(filterType)+" **");
+                    getDaysBetween(startDate, endDate);
+
+                    String eachDate = "";
+
                     for (int j = 0; j < allDates.size(); j++) {
                         eachDate = String.valueOf(allDates.get(j));
 
@@ -675,23 +722,26 @@ public class MainActivity extends AppCompatActivity {
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject jsonObject = jsonArray.getJSONObject(i);
 
-                        if (jsonObject.getString("visit_date").equals(eachDate)) {
-                            String siteId = jsonObject.getString("id_website");
-                            String siteName = jsonObject.getString("website_name");
-                            String visitDate = jsonObject.getString("visit_date");
-                            String visitors = jsonObject.getString("total_visits");
+                            if (jsonObject.getString("visit_date").equals(eachDate)) {
+                                String siteId = jsonObject.getString("id_website");
+                                String siteName = jsonObject.getString("website_name");
+                                String visitDate = jsonObject.getString("visit_date");
+                                String visitors = jsonObject.getString("total_visits");
 
 
-                            items newItem = new items(siteName, siteId, visitDate, visitors);
-                            items.add(newItem);
-                            Log.d("MainActivity ->", "within the date " + eachDate + " --> " + siteName + " " + siteId + " " + visitDate + " " + visitors);
+                                items newItem = new items(siteName, siteId, visitDate, visitors);
+                                items.add(newItem);
+                                Log.d("MainActivity ->", "within the date " + eachDate + " --> " + siteName + " " + siteId + " " + visitDate + " " + visitors);
 
-                            checkData = "UPDATED!";
+
+                            }
                         }
+                    }
 
-                        if (items.size() == 0){
-                            checkData = "NO DATA!";
-                        }
+                    if (items.size() == 0){
+                        checkData = "NO DATA!";
+                    } else {
+                        checkData = "UPDATED!";
                     }
                 }
 
@@ -702,6 +752,8 @@ public class MainActivity extends AppCompatActivity {
                 txtItemCount.setText(String.valueOf(items.size()));
 
                 JSONtoArray();
+
+                filterType = 0;
 
             } catch (IOException e) {
                 e.printStackTrace();
