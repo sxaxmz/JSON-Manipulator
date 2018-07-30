@@ -22,7 +22,7 @@ This project is a template of an Android app that allows the user to manipulate 
   * Analytics tool for 3rd party app/web service.
   
 ### Debug:
-There is no need to use any debig tools in-case of modification/enhancement to the application. As the application contains Logs before executing any function that will assist when facing any difficulty.
+There is no need to use any debug tools in-case of modification/enhancement to the application. As the application contains Logs before executing any function, were those logs will assist when facing any difficulty.
 	
 ```
 	Log.d("ActivityName", "Executed Function/method");
