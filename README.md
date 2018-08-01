@@ -24,21 +24,21 @@ This project is a template of an Android app that allows the user to manipulate 
 ### Integrate:
   #### Fork repository.
   #### Modify the source path.
-    * The input stream for current repository context: 
+- The input stream for current repository context: 
 	 
 ```
 	InputStream is = getAssets().open("websiteRanking.json");  
 ```  
 
   #### Modify the file name to your source name to keep track.
-    * As the app creates a local copy of the file to allow the user to view it later or to modify it without affecting the original file. The local file name is defined as a string:
+- As the app creates a local copy of the file to allow the user to view it later or to modify it without affecting the original file. The local file name is defined as a string:
 	 
 ``` 
 	String fileName = "websiteRanking.json";
 ```
 
   #### Modify the JSON Objects attributes to match your source.
-    * The JSON Objects for current repository context: 
+- The JSON Objects for current repository context: 
 	 
 ```
 	String siteId = jsonObject.getString("id_website");
@@ -48,7 +48,7 @@ This project is a template of an Android app that allows the user to manipulate 
 ```
 
   #### JSON items and adapter.
-    * Modify the JSON items array and adapter to match your source:
+- Modify the JSON items array and adapter to match your source:
 	 
 ```  
 	myRVA.java
@@ -56,20 +56,20 @@ This project is a template of an Android app that allows the user to manipulate 
 ```
 
   #### Chart attributes.
-    * Arrays that will be used to initialize the chart:
+- Arrays that will be used to initialize the chart:
   
 ```  
 	public static String[] siteName;
 	public static float[] visitors;
 ```
 
-    * Function to fill the data accordingly into the arrays:
+- Function to fill the data accordingly into the arrays:
 
 ```
 	public void JSONtoArray () {
 ```
 
-    * In-order to change the chart design/look:
+- In-order to change the chart design/look:
 	 
 ```  
 	chartActivity.java
