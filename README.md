@@ -47,7 +47,7 @@ This project is a template of an Android app that allows the user to manipulate 
         String siteName = jsonObject.getString("website_name");
         String visitDate = jsonObject.getString("visit_date");
         String visitors = jsonObject.getString("total_visits");
-		...
+        ...
     }
 ```
 
