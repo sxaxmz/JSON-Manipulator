@@ -43,14 +43,10 @@ This project is a template of an Android app that allows the user to manipulate 
 ```
 	public items jsonObjects(JSONObject jsonObject) throws JSONException {
         ...
-		...
-		
         String siteId = jsonObject.getString("id_website");
         String siteName = jsonObject.getString("website_name");
         String visitDate = jsonObject.getString("visit_date");
         String visitors = jsonObject.getString("total_visits");
-
-        ...
 		...
     }
 ```
