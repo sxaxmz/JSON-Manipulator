@@ -41,10 +41,18 @@ This project is a template of an Android app that allows the user to manipulate 
 - The JSON Objects for current repository context: 
 	 
 ```
-	String siteId = jsonObject.getString("id_website");
-	String siteName = jsonObject.getString("website_name");
-	String visitDate = jsonObject.getString("visit_date");
-	String visitors = jsonObject.getString("total_visits");
+	public items jsonObjects(JSONObject jsonObject) throws JSONException {
+        ...
+		...
+		
+        String siteId = jsonObject.getString("id_website");
+        String siteName = jsonObject.getString("website_name");
+        String visitDate = jsonObject.getString("visit_date");
+        String visitors = jsonObject.getString("total_visits");
+
+        ...
+		...
+    }
 ```
 
   #### JSON items and adapter.
@@ -67,6 +75,9 @@ This project is a template of an Android app that allows the user to manipulate 
 
 ```
 	public void JSONtoArray () {
+	...
+	...
+	}
 ```
 
 - In-order to change the chart design/look:

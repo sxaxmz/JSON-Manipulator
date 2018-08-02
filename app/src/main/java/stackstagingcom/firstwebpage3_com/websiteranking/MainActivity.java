@@ -99,6 +99,8 @@ public class MainActivity extends AppCompatActivity {
 
     Window window;
 
+    items newItem;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -213,6 +215,20 @@ public class MainActivity extends AppCompatActivity {
         });
 
         saveData();
+    }
+
+
+    public items jsonObjects(JSONObject jsonObject) throws JSONException {
+        Log.d("MainActivity", "** jsonObject function **");
+
+        String siteId = jsonObject.getString("id_website");
+        String siteName = jsonObject.getString("website_name");
+        String visitDate = jsonObject.getString("visit_date");
+        String visitors = jsonObject.getString("total_visits");
+
+        newItem = new items( siteName, siteId, visitDate, visitors);
+
+        return newItem;
     }
 
 
@@ -542,13 +558,7 @@ public class MainActivity extends AppCompatActivity {
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
 
-                String siteId = jsonObject.getString("id_website");
-                String siteName = jsonObject.getString("website_name");
-                String visitDate = jsonObject.getString("visit_date");
-                String visitors = jsonObject.getString("total_visits");
-
-
-                items newItem = new items(siteName, siteId, visitDate, visitors);
+                jsonObjects(jsonObject);
 
                 items.add(newItem);
             }
@@ -580,12 +590,7 @@ public class MainActivity extends AppCompatActivity {
                 for (int i=0; i<jsonArray.length();i++){
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
 
-                    String siteId = jsonObject.getString("id_website");
-                    String siteName = jsonObject.getString("website_name");
-                    String visitDate = jsonObject.getString("visit_date");
-                    String visitors = jsonObject.getString("total_visits");
-
-                    items newItem = new items( siteName, siteId, visitDate, visitors);
+                    jsonObjects(jsonObject);
 
                     items.add(newItem);
                 }
@@ -629,10 +634,6 @@ public class MainActivity extends AppCompatActivity {
             String _websiteName = items.get(i).getSiteName();
             String _numOfVisitors = items.get(i).getVisiotrs();
 
-
-            //Log.d("MainActivity", " websiteName --> " + _websiteName + " --> " + i);
-           // Log.d("MainActivity", " totalVisits --> " + _numOfVisitors + " --> " + i);
-
             nameOfSite[i] = _websiteName;
             numOfVisits[i] = Integer.parseInt(_numOfVisitors);
 
@@ -642,15 +643,11 @@ public class MainActivity extends AppCompatActivity {
         //Keep the unique names to be used as indicators in the array
         Set<String> uniqueString = new HashSet<>(Arrays.asList(nameOfSite));
         siteName = uniqueString.toArray(new String[uniqueString.size()]);
-        //Log.d("MainActivity", "siteName array --> " + Arrays.toString(siteName));
         visitors = new float[uniqueString.size()];
 
 
-        //Get the number of visits of the duplicated values and store it
-        //In one unique value column
-
-        /** This section will filter the JSON file to give us the list of all the unique values **/
-        /** with the reference number of the row in the JSON file and count for the unique value quantity **/
+        /** This section will filter the JSON file to give us the list of all the unique values
+            with the reference number of the row in the JSON file and count for the unique value quantity **/
         for (int i = 0; i < siteName.length; i++) {
             int count = 0;
             visitors[i] = 0;
@@ -658,16 +655,12 @@ public class MainActivity extends AppCompatActivity {
                 //Log.d("MainActivity", j + " --> " + nameOfSite[j] + " <--> " + numOfVisits[j]);
 
                 if (nameOfSite[j].equals(siteName[i])) {
-                    //Log.d("MainActivity", j + " --> " + nameOfSite[j] + " <--> " + siteName[i]);
                     visitors[i] += numOfVisits[j];
-                    //Log.d("MainActivity", j + " --> " + numOfVisits[j] + " <--> " + visitors[i]);
                     ++count;
                 }
             }
-            //Log.d("MainActivity", "The count for "+siteName[i]+" --> "+count);
             //Log.d("MainActivity", siteName[i]+" <--> "+visitors[i]);
         }
-
         Log.d("MainActivity", "The final arrays --> "+ Arrays.toString(siteName)+" <--> "+Arrays.toString(visitors));
     }
 
@@ -696,46 +689,23 @@ public class MainActivity extends AppCompatActivity {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
 
                         if (jsonObject.getString("website_name").equals(filterName)) {
-
-                            String siteId = jsonObject.getString("id_website");
-                            String siteName = jsonObject.getString("website_name");
-                            String visitDate = jsonObject.getString("visit_date");
-                            String visitors = jsonObject.getString("total_visits");
-
-
-                            items newItem = new items(siteName, siteId, visitDate, visitors);
-
+                            jsonObjects(jsonObject);
                             items.add(newItem);
-
                         }
                     }
                 } else if (filterType == 2){
                     Log.d("MainActivity", "** filterType "+Integer.toString(filterType)+" **");
                     getDaysBetween(startDate, endDate);
-
-
-
                     for (int j = 0; j < allDates.size(); j++) {
                         eachDate = String.valueOf(allDates.get(j));
-                        //Log.d("MainActivity", "allDates.get(j) result --> "+allDates.get(j));
-                        //Log.d("MainActivity", "items from JSON --> " + items.get(j)+ " item --> "+ j);
 
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject jsonObject = jsonArray.getJSONObject(i);
 
                             if (jsonObject.getString("visit_date").equals(eachDate)) {
-                                String siteId = jsonObject.getString("id_website");
-                                String siteName = jsonObject.getString("website_name");
-                                String visitDate = jsonObject.getString("visit_date");
-                                String visitors = jsonObject.getString("total_visits");
-
-
-                                items newItem = new items(siteName, siteId, visitDate, visitors);
+                                jsonObjects(jsonObject);
                                 items.add(newItem);
-                                Log.d("MainActivity ->", "within the date " + eachDate + " --> " + siteName + " " + siteId + " " + visitDate + " " + visitors);
-
-
-                            }
+                           }
                         }
                     }
                 } else if (filterType == 3) {
@@ -743,24 +713,12 @@ public class MainActivity extends AppCompatActivity {
                     for (int j = 0; j < allDates.size(); j++) {
                         eachDate = String.valueOf(allDates.get(j));
 
-                        //Log.d("MainActivity", "allDates.get(j) result --> "+allDates.get(j));
-                        //Log.d("MainActivity", "items from JSON --> " + items.get(j)+ " item --> "+ j);
-
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject jsonObject = jsonArray.getJSONObject(i);
 
                             if (jsonObject.getString("visit_date").equals(eachDate) && jsonObject.getString("website_name").equals(filterName)) {
-                                String siteId = jsonObject.getString("id_website");
-                                String siteName = jsonObject.getString("website_name");
-                                String visitDate = jsonObject.getString("visit_date");
-                                String visitors = jsonObject.getString("total_visits");
-
-
-                                items newItem = new items(siteName, siteId, visitDate, visitors);
+                                jsonObjects(jsonObject);
                                 items.add(newItem);
-                                Log.d("MainActivity ->", "within the date " + eachDate + " --> " + siteName + " " + siteId + " " + visitDate + " " + visitors);
-
-
                             }
                         }
                     }
@@ -801,15 +759,12 @@ public class MainActivity extends AppCompatActivity {
                 Date dateStart = myFormat.parse(startDate);
                 Date dateEnd = myFormat.parse(endDate);
 
-
                 Calendar c1 = DateToCalendar(dateStart);
                 Calendar c2 = DateToCalendar(dateEnd);
 
                 while (!areEqualDate(c1, c2)) {
                     allDates.add(myFormat.format(c1.getTime()));
-                    //System.out.println (c1.getTime());
                     c1.add(Calendar.DAY_OF_YEAR, 1);
-
                     Log.d("MainActivity", "dateBetween --> " + String.valueOf(c1.getTime()));
                 }
                 allDates.add(myFormat.format(c2.getTime()));
