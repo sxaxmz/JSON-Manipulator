@@ -14,6 +14,7 @@ This project is a template of an Android app that allows the user to manipulate 
   - [x] Search data-set.
   - [x] Add data.
   - [x] Data-set sort and manipulation.
+  - [ ] Export modified version.
   
 ### Modification Examples:
 

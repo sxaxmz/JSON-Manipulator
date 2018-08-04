@@ -8,9 +8,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import android.net.Uri;
+import android.os.Environment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -74,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
     String dateVisit = "";
     String filterName = "";
     String fileName = "websiteRanking.json";
-    String id, websiteName, visitDate, numOfVisitors, filePath;
+    String id, websiteName, visitDate, numOfVisitors, filePath, downloadDir;
 
     Button btnFilter, btnAdd;
 
@@ -140,7 +143,6 @@ public class MainActivity extends AppCompatActivity {
         txtItemCount = findViewById(R.id.txtItemCount);
         txtVisitDate = findViewById(R.id.txtVisitDate);
 
-
         fab_add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -180,9 +182,10 @@ public class MainActivity extends AppCompatActivity {
         fab_export.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                filePath = String.valueOf(getDir(fileName, Context.MODE_PRIVATE));
-                Log.d("MainActivity", "file path -->"+filePath);
-                exportFile();
+                Toast.makeText(MainActivity.this, "Export is currently not available!", Toast.LENGTH_LONG).show();
+                filePath = String.valueOf(getFilesDir());
+                downloadDir = String.valueOf(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS));
+                //exportFile();
                 fab_menu.close(true);
             }
         });
@@ -855,8 +858,14 @@ public class MainActivity extends AppCompatActivity {
 
     public void exportFile () {
         Log.d("MainActivity", "** exportFile function **");
+        File file2 = new File(downloadDir, fileName);
+        File file = new File(filePath,fileName);
         DownloadManager dm = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
-        dm.addCompletedDownload(fileName, fileName, true, "application/json",filePath, fileName.length() ,true);
+        Log.d("MainActivity", "file name --> "+ file.getName());
+        Log.d("MainActivity", "file path --> "+ file.getPath());
+        Log.d("MainActivity", "file length --> "+ file.length());
+        dm.addCompletedDownload(file.getName(), file.getName(), false, "application/json",file.getPath(), file.length() ,true);
+        Toast.makeText(MainActivity.this, "File has been exported!", Toast.LENGTH_SHORT).show();
     }
 
 }
