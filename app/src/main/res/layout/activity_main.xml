@@ -162,10 +162,18 @@
                 fab:fab_size="mini" />
 
             <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/fab_export"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/export"
+                fab:fab_label="Export File"
+                fab:fab_size="mini" />
+
+            <com.github.clans.fab.FloatingActionButton
                 android:id="@+id/fab_graph"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/graph"
+                android:src="@drawable/chart"
                 fab:fab_label="View Chart"
                 fab:fab_size="mini" />
 

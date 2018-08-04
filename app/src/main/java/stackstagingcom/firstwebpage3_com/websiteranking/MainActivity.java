@@ -2,6 +2,7 @@ package stackstagingcom.firstwebpage3_com.websiteranking;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.app.DownloadManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -73,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
     String dateVisit = "";
     String filterName = "";
     String fileName = "websiteRanking.json";
-    String id, websiteName, visitDate, numOfVisitors;
+    String id, websiteName, visitDate, numOfVisitors, filePath;
 
     Button btnFilter, btnAdd;
 
@@ -85,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<items> items;
     ArrayList<String> allDates = new ArrayList();
 
-    com.github.clans.fab.FloatingActionButton fab_add, fab_search, fab_refresh, fab_graph, fab_creator;
+    com.github.clans.fab.FloatingActionButton fab_add, fab_search, fab_refresh, fab_graph, fab_export, fab_creator;
     FloatingActionMenu fab_menu;
 
     EditText etSiteName, etVisitors, etFilterName;
@@ -125,6 +126,7 @@ public class MainActivity extends AppCompatActivity {
         fab_search = findViewById(R.id.fab_search);
         fab_refresh = findViewById(R.id.fab_refresh);
         fab_graph = findViewById(R.id.fab_graph);
+        fab_export = findViewById(R.id.fab_export);
         fab_creator = findViewById(R.id.fab_creator);
 
         client = new OkHttpClient();
@@ -172,6 +174,16 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     Toast.makeText(MainActivity.this, "Chart is not working at the moment!", Toast.LENGTH_SHORT).show();
                 }
+            }
+        });
+
+        fab_export.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                filePath = String.valueOf(getDir(fileName, Context.MODE_PRIVATE));
+                Log.d("MainActivity", "file path -->"+filePath);
+                exportFile();
+                fab_menu.close(true);
             }
         });
 
@@ -562,8 +574,6 @@ public class MainActivity extends AppCompatActivity {
 
                 items.add(newItem);
             }
-
-
         } catch (IOException | JSONException e) {
             e.printStackTrace();
         }
@@ -617,7 +627,6 @@ public class MainActivity extends AppCompatActivity {
         JSONtoArray();
     }
 
-    //Test function for graph
     public void JSONtoArray () {
 
         Log.d("MainActivity", "** JSONtoArray function **");
@@ -842,6 +851,12 @@ public class MainActivity extends AppCompatActivity {
         Log.d("MainActivity", "*** creatorLink ***");
         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.github.com/sxaxmz"));
         startActivity(browserIntent);
+    }
+
+    public void exportFile () {
+        Log.d("MainActivity", "** exportFile function **");
+        DownloadManager dm = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+        dm.addCompletedDownload(fileName, fileName, true, "application/json",filePath, fileName.length() ,true);
     }
 
 }

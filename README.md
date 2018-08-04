@@ -31,7 +31,7 @@ This project is a template of an Android app that allows the user to manipulate 
 ```  
 
   #### Modify the file name to your source name to keep track.
-- As the app creates a local copy of the file to allow the user to view it later or to modify it without affecting the original file. The local file name is defined as a string:
+- As the app creates a local copy of the file to allow the user to view it or modify it without affecting the original file. The local file name is defined as a string:
 	 
 ``` 
 	String fileName = "websiteRanking.json";
