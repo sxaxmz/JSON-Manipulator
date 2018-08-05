@@ -12,6 +12,8 @@ import android.graphics.drawable.ColorDrawable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+
+import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Environment;
 import android.support.v4.content.ContextCompat;
@@ -44,6 +46,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Set;
 import okhttp3.OkHttpClient;
 import android.support.v7.app.ActionBar;
@@ -185,7 +188,7 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "Export is currently not available!", Toast.LENGTH_LONG).show();
                 filePath = String.valueOf(getFilesDir());
                 downloadDir = String.valueOf(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS));
-                //exportFile();
+                //exportFile(fileName);
                 fab_menu.close(true);
             }
         });
@@ -202,10 +205,8 @@ public class MainActivity extends AppCompatActivity {
 
         getJSON();
 
-
-
         if (firstTime == 0){
-            writeFile();
+            writeFile(fileName);
         }
 
         txtVisitors.setOnClickListener(new View.OnClickListener() {
@@ -280,7 +281,7 @@ public class MainActivity extends AppCompatActivity {
         firstTime = Integer.parseInt(first_time);
     }
 
-     public void writeFile() {
+     public void writeFile(String fileName) {
         Log.d("MainActivity", "** CreateFile function **");
 
         String _id;
@@ -856,15 +857,15 @@ public class MainActivity extends AppCompatActivity {
         startActivity(browserIntent);
     }
 
-    public void exportFile () {
+    public void exportFile (String fileName) {
         Log.d("MainActivity", "** exportFile function **");
         File file2 = new File(downloadDir, fileName);
         File file = new File(filePath,fileName);
-        DownloadManager dm = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+        DownloadManager dm = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
         Log.d("MainActivity", "file name --> "+ file.getName());
-        Log.d("MainActivity", "file path --> "+ file.getPath());
+        Log.d("MainActivity", "file path --> "+ file.getAbsolutePath());
         Log.d("MainActivity", "file length --> "+ file.length());
-        dm.addCompletedDownload(file.getName(), file.getName(), false, "application/json",file.getPath(), file.length() ,true);
+        Objects.requireNonNull(dm).addCompletedDownload(file.getName(), file.getName(), false, "application/json",file.getAbsolutePath(), file.length() ,true);
         Toast.makeText(MainActivity.this, "File has been exported!", Toast.LENGTH_SHORT).show();
     }
 
