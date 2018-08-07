@@ -48,7 +48,6 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
-import okhttp3.OkHttpClient;
 import android.support.v7.app.ActionBar;
 
 public class MainActivity extends AppCompatActivity {
@@ -66,7 +65,6 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView.Adapter myRVA;
     private RecyclerView.LayoutManager myRVLM;
 
-    private OkHttpClient client;
 
     private TextView dtStart;
     private TextView dtEnd;
@@ -80,7 +78,8 @@ public class MainActivity extends AppCompatActivity {
     String dateVisit = "";
     String filterName = "";
     String fileName = "websiteRanking.json";
-    String id, websiteName, visitDate, numOfVisitors, filePath, downloadDir;
+    String appFolder = "JSON-Manipulator";
+    String id, websiteName, visitDate, numOfVisitors, filePath;
 
     Button btnFilter, btnAdd;
 
@@ -108,6 +107,8 @@ public class MainActivity extends AppCompatActivity {
 
     items newItem;
 
+    File fileJSON;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -126,6 +127,9 @@ public class MainActivity extends AppCompatActivity {
 
         loadData();
 
+        filePath = Environment.getExternalStorageDirectory()+"/"+appFolder;
+        fileJSON = new File(filePath, fileName);
+
         fab_menu = findViewById(R.id.fab_menu);
         fab_add = findViewById(R.id.fab_add);
         fab_search = findViewById(R.id.fab_search);
@@ -133,8 +137,6 @@ public class MainActivity extends AppCompatActivity {
         fab_graph = findViewById(R.id.fab_graph);
         fab_export = findViewById(R.id.fab_export);
         fab_creator = findViewById(R.id.fab_creator);
-
-        client = new OkHttpClient();
 
         items = new ArrayList<>();
 
@@ -185,8 +187,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Toast.makeText(MainActivity.this, "Export is currently not available!", Toast.LENGTH_LONG).show();
-                filePath = String.valueOf(Environment.getExternalStorageDirectory()+"/"+fileName);
-                downloadDir = String.valueOf(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS));
                 exportFile(fileName);
                 fab_menu.close(true);
             }
@@ -205,15 +205,14 @@ public class MainActivity extends AppCompatActivity {
         getJSON();
 
         if (firstTime == 0 && checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)){
-            File createNewDir = new File (Environment.getExternalStorageDirectory(), "JSON-Manipulator");
+            File createNewDir = new File (Environment.getExternalStorageDirectory(), appFolder);
             Boolean isSuccessful = createNewDir.mkdirs();
             if (!isSuccessful) {
                 Log.d("MainActivity", "File was not created successfully !");
                 Toast.makeText(MainActivity.this,"File was not created successfully, grant storage permission !",Toast.LENGTH_LONG).show();
             } else {
                 Log.d("MainActivity", "File was created successfully !");
-                File createJSON = new File(createNewDir, fileName);
-                writeFile(createJSON);
+                writeFile(fileJSON);
             }
         }
 
@@ -508,7 +507,7 @@ public class MainActivity extends AppCompatActivity {
         Log.d("MainActivity", "write to local file");
         try {
             JSONObject jsonObject = new JSONObject();
-            OutputStream fos = openFileOutput(fileName, Context.MODE_PRIVATE);
+            OutputStream fos = new FileOutputStream(fileJSON);
 
             fos.write("[".getBytes());
             fos.write("\n".getBytes());
@@ -532,8 +531,6 @@ public class MainActivity extends AppCompatActivity {
 
                 fos.write(jsonObject.toString().getBytes());
                 fos.write("\n".getBytes());
-
-
             }
 
             //Write the new added data
@@ -555,6 +552,7 @@ public class MainActivity extends AppCompatActivity {
             fos.close();
 
             Log.d("MainActivity", "Data has been added!");
+            Toast.makeText(MainActivity.this, "Data has been added!", Toast.LENGTH_SHORT).show();
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -570,10 +568,11 @@ public class MainActivity extends AppCompatActivity {
             items.clear();
             String json;
             FileInputStream fis;
-            fis = openFileInput(fileName);
-            // InputStreamReader isr = new InputStreamReader(fis);
-            // BufferedReader br = new BufferedReader(isr);
-            //  StringBuilder sb = new StringBuilder();
+            File file = new File (Environment.getExternalStorageDirectory()+"/"+fileName, fileName);
+            fis = new FileInputStream(file);
+            //InputStreamReader isr = new InputStreamReader(fis);
+            //BufferedReader br = new BufferedReader(isr);
+            //StringBuilder sb = new StringBuilder();
             int size = fis.available();
             byte[] buffer = new byte[size];
             fis.read(buffer);
@@ -581,7 +580,6 @@ public class MainActivity extends AppCompatActivity {
 
             json = new String(buffer, "UTF-8");
             JSONArray jsonArray = new JSONArray(json);
-
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
 
@@ -698,7 +696,7 @@ public class MainActivity extends AppCompatActivity {
 
             try {
                 FileInputStream fis;
-                fis = openFileInput(fileName);
+                fis = new FileInputStream(fileJSON);
                 int size = fis.available();
                 byte[] buffer = new byte[size];
                 fis.read(buffer);
@@ -870,14 +868,15 @@ public class MainActivity extends AppCompatActivity {
 
     public void exportFile (String fileName) {
         Log.d("MainActivity", "** exportFile function **");
-        File file2 = new File(downloadDir, fileName);
         File file = new File(filePath,fileName);
         DownloadManager dm = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
-        Log.d("MainActivity", "file name --> "+ file.getName());
-        Log.d("MainActivity", "file path --> "+ file.getAbsolutePath());
-        Log.d("MainActivity", "file length --> "+ file.length());
-        Objects.requireNonNull(dm).addCompletedDownload(file.getName(), file.getName(), false, "application/json",file.getAbsolutePath(), file.length() ,true);
-        Toast.makeText(MainActivity.this, "File has been exported!", Toast.LENGTH_SHORT).show();
+        if (dm != null) {
+            Log.d("MainActivity", "file name --> "+ file.getName());
+            Log.d("MainActivity", "file path --> "+ file.getAbsolutePath());
+            Log.d("MainActivity", "file length --> "+ file.length());
+            dm.addCompletedDownload(file.getName(), file.getName(), true, "application/json",file.getAbsolutePath(), file.length() ,true);
+            Toast.makeText(MainActivity.this, "File has been exported!", Toast.LENGTH_SHORT).show();
+        }
     }
 
 }
