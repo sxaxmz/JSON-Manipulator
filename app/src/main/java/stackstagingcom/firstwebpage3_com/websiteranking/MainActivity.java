@@ -206,6 +206,8 @@ public class MainActivity extends AppCompatActivity {
         getJSON();
 
         if (firstTime == 0){
+            File createNewDir = new File (Environment.getExternalStorageDirectory(), fileName);
+            createNewDir.mkdirs();
             writeFile(fileName);
         }
 
