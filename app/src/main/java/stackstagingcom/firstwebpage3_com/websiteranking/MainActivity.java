@@ -1,19 +1,19 @@
 package stackstagingcom.firstwebpage3_com.websiteranking;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.DownloadManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.InputStream;
-
-import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Environment;
 import android.support.v4.content.ContextCompat;
@@ -124,7 +124,6 @@ public class MainActivity extends AppCompatActivity {
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS );
         window.setStatusBarColor(ContextCompat.getColor(MainActivity.this,R.color.appColor));
 
-
         loadData();
 
         fab_menu = findViewById(R.id.fab_menu);
@@ -186,9 +185,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Toast.makeText(MainActivity.this, "Export is currently not available!", Toast.LENGTH_LONG).show();
-                filePath = String.valueOf(getFilesDir());
+                filePath = String.valueOf(Environment.getExternalStorageDirectory()+"/"+fileName);
                 downloadDir = String.valueOf(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS));
-                //exportFile(fileName);
+                exportFile(fileName);
                 fab_menu.close(true);
             }
         });
@@ -205,10 +204,17 @@ public class MainActivity extends AppCompatActivity {
 
         getJSON();
 
-        if (firstTime == 0){
-            File createNewDir = new File (Environment.getExternalStorageDirectory(), fileName);
-            createNewDir.mkdirs();
-            writeFile(fileName);
+        if (firstTime == 0 && checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)){
+            File createNewDir = new File (Environment.getExternalStorageDirectory(), "JSON-Manipulator");
+            Boolean isSuccessful = createNewDir.mkdirs();
+            if (!isSuccessful) {
+                Log.d("MainActivity", "File was not created successfully !");
+                Toast.makeText(MainActivity.this,"File was not created successfully, grant storage permission !",Toast.LENGTH_LONG).show();
+            } else {
+                Log.d("MainActivity", "File was created successfully !");
+                File createJSON = new File(createNewDir, fileName);
+                writeFile(createJSON);
+            }
         }
 
         txtVisitors.setOnClickListener(new View.OnClickListener() {
@@ -235,6 +241,10 @@ public class MainActivity extends AppCompatActivity {
         saveData();
     }
 
+    public Boolean checkPermission (String permission) {
+        int check = ContextCompat.checkSelfPermission(MainActivity.this, permission);
+        return (check == PackageManager.PERMISSION_GRANTED);
+    }
 
     public items jsonObjects(JSONObject jsonObject) throws JSONException {
         Log.d("MainActivity", "** jsonObject function **");
@@ -271,7 +281,7 @@ public class MainActivity extends AppCompatActivity {
 
         String ft = String.valueOf(firstTime);
         editor.putString(FIRST_TIME, ft);
-        Log.d("MainActivity", "Data saved --> "+ ft);
+        //Log.d("MainActivity", "Data saved --> "+ ft);
         editor.apply();
     }
 
@@ -283,7 +293,7 @@ public class MainActivity extends AppCompatActivity {
         firstTime = Integer.parseInt(first_time);
     }
 
-     public void writeFile(String fileName) {
+     public void writeFile(File fileName) {
         Log.d("MainActivity", "** CreateFile function **");
 
         String _id;
@@ -293,7 +303,7 @@ public class MainActivity extends AppCompatActivity {
 
          try {
              JSONObject jsonObject = new JSONObject();
-             OutputStream fos = openFileOutput(fileName, Context.MODE_PRIVATE);
+             FileOutputStream fos = new FileOutputStream(fileName);
 
              fos.write("[".getBytes());
              fos.write("\n".getBytes());
@@ -322,7 +332,7 @@ public class MainActivity extends AppCompatActivity {
                  }
              fos.write("]".getBytes());
 
-             Log.d("MainActivity", "saved to -->"+ getFilesDir()+"/"+fileName);
+             Log.d("MainActivity", "saved to -->"+ String.valueOf(fileName));
 
              fos.close();
 
@@ -493,7 +503,6 @@ public class MainActivity extends AppCompatActivity {
 
         int newId = jsonID +1;
 
-        Log.d("MainActivity", "Read from local file");
         readLocalFile();
 
         Log.d("MainActivity", "write to local file");
@@ -557,7 +566,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void readLocalFile(){
         try {
-            Log.d("MainActivity", "** Local file **");
+            Log.d("MainActivity", "** Read Local file **");
             items.clear();
             String json;
             FileInputStream fis;
