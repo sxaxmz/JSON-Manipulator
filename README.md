@@ -14,7 +14,7 @@ This project is a template of an Android app that allows the user to manipulate 
   - [x] Search data-set.
   - [x] Add data.
   - [x] Data-set sort and manipulation.
-  - [ ] Export modified version.
+  - [x] Export modified version.
   
 ### Modification Examples:
 
@@ -23,22 +23,22 @@ This project is a template of an Android app that allows the user to manipulate 
   * Analytics tool for 3rd party app/web service.
   
 ### Integrate:
-  #### Fork repository.
-  #### Modify the source path.
+  #### Fork repository
+  #### Modify the source path
 - The input stream for current repository context: 
 	 
 ```
 	InputStream is = getAssets().open("websiteRanking.json");  
 ```  
 
-  #### Modify the file name to your source name to keep track.
+  #### Modify the file name to your source name to keep track
 - As the app creates a local copy of the file to allow the user to view it or modify it without affecting the original file. The local file name is defined as a string:
 	 
 ``` 
 	String fileName = "websiteRanking.json";
 ```
 
-  #### Modify the JSON Objects attributes to match your source.
+  #### Modify the JSON Objects attributes to match your source
 - The JSON Objects for current repository context: 
 	 
 ```
@@ -52,7 +52,7 @@ This project is a template of an Android app that allows the user to manipulate 
     }
 ```
 
-  #### JSON items and adapter.
+  #### JSON items and adapter
 - Modify the JSON items array and adapter to match your source:
 	 
 ```  
@@ -60,7 +60,7 @@ This project is a template of an Android app that allows the user to manipulate 
 	items.java
 ```
 
-  #### Chart attributes.
+  #### Chart attributes
 - Arrays that will be used to initialize the chart:
   
 ```  
@@ -82,6 +82,26 @@ This project is a template of an Android app that allows the user to manipulate 
 ```  
 	chartActivity.java
 ```
+
+  #### Export
+- The name of the folder that will be created in external storage:
+  
+```  
+	String appFolder = "JSON-Manipulator";
+```
+
+- The folder path of the created folder:
+  
+```  
+	filePath = Environment.getExternalStorageDirectory()+"/"+appFolder;
+```
+
+- The file that will be alterd within the folder:
+  
+```  
+	fileJSON = new File(filePath, fileName);
+```
+
 
 ### Debug:
 There is no need to use any debug tools in-case of modification/enhancement to the application. As the application contains Logs before executing any function, were those logs will assist when facing any difficulty.

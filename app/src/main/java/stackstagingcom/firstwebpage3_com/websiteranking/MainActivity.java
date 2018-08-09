@@ -210,9 +210,11 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("MainActivity", "File was not created successfully !");
 
                 if (!checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)){
-                    Toast.makeText(MainActivity.this,"File was not created successfully, grant storage permission !",Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this,"Grant storage permission !",Toast.LENGTH_LONG).show();
                 }
-                Toast.makeText(MainActivity.this,"Something went wrong!",Toast.LENGTH_LONG).show();
+                if (createNewDir.exists()){
+                    Toast.makeText(MainActivity.this,"File Already exist!",Toast.LENGTH_LONG).show();
+                }
             } else {
                 Log.d("MainActivity", "File was created successfully !");
                 writeFile(fileJSON);
@@ -284,7 +286,7 @@ public class MainActivity extends AppCompatActivity {
 
         String ft = String.valueOf(firstTime);
         editor.putString(FIRST_TIME, ft);
-        //Log.d("MainActivity", "Data saved --> "+ ft);
+        Log.d("MainActivity", "Data saved --> "+ ft);
         editor.apply();
     }
 
