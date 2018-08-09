@@ -185,7 +185,6 @@ public class MainActivity extends AppCompatActivity {
         fab_export.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(MainActivity.this, "Export is currently not available!", Toast.LENGTH_LONG).show();
                 exportFile(fileName);
                 fab_menu.close(true);
             }
