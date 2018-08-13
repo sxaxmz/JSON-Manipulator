@@ -25,6 +25,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -56,12 +57,14 @@ public class MainActivity extends AppCompatActivity {
     public static final String FIRST_TIME = "firstTime";
 
     public static int jsonID = 0;
+    public static String clickedSiteName = "";
+    public static String clickedVisits = "";
 
 
     private String first_time;
 
     private RecyclerView myRV;
-    private RecyclerView.Adapter myRVA;
+    private MyRVA myRVA;
     private RecyclerView.LayoutManager myRVLM;
 
 
@@ -597,6 +600,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void itemsClicked (String siteName, String visits){
+        Toast.makeText(MainActivity.this, "Site name --> "+siteName+"\n visits --> "+visits, Toast.LENGTH_SHORT).show();
+    }
+
     public void getJSON () {
 
         Log.d("MainActivity", "** getJSON function **");
@@ -639,6 +646,14 @@ public class MainActivity extends AppCompatActivity {
 
         myRV.setLayoutManager(myRVLM);
         myRV.setAdapter(myRVA);
+        myRVA.setOnItemClickListener(new MyRVA.onItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                Log.d("MainActivity", "siteName --> "+clickedSiteName);
+                Log.d("MainActivity", "visits --> "+clickedVisits);
+                itemsClicked(clickedSiteName, clickedVisits);
+            }
+        });
 
         txtItemCount.setText(String.valueOf(items.size()));
 
@@ -883,5 +898,4 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(MainActivity.this, "File has been exported!", Toast.LENGTH_SHORT).show();
         }
     }
-
 }
