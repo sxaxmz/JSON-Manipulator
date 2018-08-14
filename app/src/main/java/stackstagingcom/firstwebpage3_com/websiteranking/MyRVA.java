@@ -18,7 +18,7 @@ public class MyRVA extends RecyclerView.Adapter<MyRVA.viewHolder> {
     private onItemClickListener itemListener;
 
     public interface onItemClickListener {
-        void onItemClick (int position);
+        void onItemClick (int position, String siteName, String siteVisits);
     }
 
     public void setOnItemClickListener (onItemClickListener listener) {
@@ -30,6 +30,7 @@ public class MyRVA extends RecyclerView.Adapter<MyRVA.viewHolder> {
         public TextView siteName;
         public TextView visitDate;
         public TextView visitors;
+        String websiteName, websiteVisits;
 
         public viewHolder(View itemView, final onItemClickListener itemListener, final ArrayList<items> itemArrays) {
             super(itemView);
@@ -40,13 +41,13 @@ public class MyRVA extends RecyclerView.Adapter<MyRVA.viewHolder> {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (itemListener != null){
+                        if (itemListener != null){
                         int position = getAdapterPosition();
                         if (position != RecyclerView.NO_POSITION){
-                            itemListener.onItemClick(position);
                             items currentItem = itemArrays.get(position);
-                            MainActivity.clickedSiteName = currentItem.getSiteName();
-                            MainActivity.clickedVisits = currentItem.getVisiotrs();
+                            websiteName = currentItem.getSiteName();
+                            websiteVisits = currentItem.getVisiotrs();
+                            itemListener.onItemClick(position, websiteName, websiteVisits);
                         }
                     }
                 }

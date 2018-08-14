@@ -57,9 +57,6 @@ public class MainActivity extends AppCompatActivity {
     public static final String FIRST_TIME = "firstTime";
 
     public static int jsonID = 0;
-    public static String clickedSiteName = "";
-    public static String clickedVisits = "";
-
 
     private String first_time;
 
@@ -245,6 +242,9 @@ public class MainActivity extends AppCompatActivity {
         });
 
         saveData();
+    }
+
+    public MainActivity() {
     }
 
     public Boolean checkPermission (String permission) {
@@ -601,6 +601,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void itemsClicked (String siteName, String visits){
+        Log.d("MainActivity", "** itemsClicked function **");
+        Log.d("MainActivity", "siteName --> "+siteName);
+        Log.d("MainActivity", "visits --> "+visits);
         Toast.makeText(MainActivity.this, "Site name --> "+siteName+"\n visits --> "+visits, Toast.LENGTH_SHORT).show();
     }
 
@@ -644,16 +647,15 @@ public class MainActivity extends AppCompatActivity {
         myRVLM = new LinearLayoutManager(MainActivity.this);
         myRVA = new MyRVA(items);
 
-        myRV.setLayoutManager(myRVLM);
-        myRV.setAdapter(myRVA);
         myRVA.setOnItemClickListener(new MyRVA.onItemClickListener() {
             @Override
-            public void onItemClick(int position) {
-                Log.d("MainActivity", "siteName --> "+clickedSiteName);
-                Log.d("MainActivity", "visits --> "+clickedVisits);
-                itemsClicked(clickedSiteName, clickedVisits);
+            public void onItemClick(int position, String siteName, String siteVisits) {
+                    itemsClicked(siteName, siteVisits);
             }
         });
+
+        myRV.setLayoutManager(myRVLM);
+        myRV.setAdapter(myRVA);
 
         txtItemCount.setText(String.valueOf(items.size()));
 
